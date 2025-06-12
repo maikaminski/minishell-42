@@ -50,4 +50,3 @@ typedef struct s_minishell
 	int			out_fd; // STDOUT original (para restaurar depois)
 } t_minishell;
 
-

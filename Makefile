@@ -1,3 +1,6 @@
+INCS                            := src/ libft #colocar as pastas onde tem .h
+CPPFLAGS                       := $(addprefix -I,$(INCS)) -MMD -MP #facilitar o include das pastas
+
 NAME = minishell
 CC = cc
 FLAGS = -Wall -Werror -Wextra -g3
@@ -11,11 +14,11 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CC) $(FLAGS) -o $(NAME) $(OBJS)
 	chmod +x $(NAME) 
-	@echo	"███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██     "
-	@echo	"████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██     "
-	@echo	"██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██     "
-	@echo	"██  ██  ██ ██ ██  ██ ██ ██      ██ ██   ██ ██      ██      ██     "
-	@echo	"██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████"
+	echo	"███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██     "
+	echo	"████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██     "
+	echo	"██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██     "
+	echo	"██  ██  ██ ██ ██  ██ ██ ██      ██ ██   ██ ██      ██      ██     "
+	echo	"██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████"
 
 %.o: %.c
 	$(CC) $(FLAGS) -c $< -o $@
@@ -29,3 +32,5 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re 
+
+.SILENT:
