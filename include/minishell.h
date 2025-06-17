@@ -1,3 +1,10 @@
+#ifndef MINISHELL_H
+
+# define MINISHELL_H
+
+# include <stdlib.h>
+# include <stdio.h>
+# include <string.h>
 //struct de redirecionamentos
 typedef enum e_redir_type
 {
@@ -49,3 +56,5 @@ typedef struct	s_minishell
 	int			in_fd; // STDIN original (para restaurar depois)
 	int			out_fd; // STDOUT original (para restaurar depois)
 }	t_minishell;
+
+#endif
