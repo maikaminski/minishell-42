@@ -5,6 +5,9 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <string.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+
 //struct de redirecionamentos
 typedef enum e_redir_type
 {
