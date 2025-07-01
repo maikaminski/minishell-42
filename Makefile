@@ -12,7 +12,7 @@ all: $(NAME)
 
 	
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) -o $(NAME) $(OBJS)
+	$(CC) $(FLAGS) -o $(NAME) $(OBJS) -lreadline
 	chmod +x $(NAME) 
 	echo	"███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██     "
 	echo	"████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██     "
