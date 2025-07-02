@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 17:04:12 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/02 17:08:38 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/02 17:31:21 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,3 +90,12 @@ void	set_env_value(t_env **env,
 		append_env_node(env, new);
 	}
 }
+
+/*
+** Funções utilitárias para manipulação da lista de variáveis de ambiente.
+** - create_env_node: cria um novo nó com key e value usando gc_malloc.
+** - find_env_key: busca uma key na lista e retorna o nó correspondente.
+** - update_env_value: atualiza o value de uma key existente com novo conteúdo.
+** - append_env_node: adiciona um novo nó no final da lista de variáveis.
+** - set_env_value: atualiza ou cria uma variável de ambiente na lista.
+*/
