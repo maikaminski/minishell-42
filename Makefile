@@ -1,19 +1,29 @@
-INCS                            := src/ libft #colocar as pastas onde tem .h
-CPPFLAGS                       := $(addprefix -I,$(INCS)) -MMD -MP #facilitar o include das pastas
-
 NAME = minishell
+
 CC = cc
-FLAGS = -Wall -Werror -Wextra -g3
-SRC = 
+CFLAGS = -Wall -Werror -Wextra -g3
+
+INCS = include libft # Colocar as pastas onde tem .h
+CPPFLAGS = $(addprefix -I,$(INCS)) -MMD -MP # Facilitar o include das pastas
+SRC = $(shell find . -name "*.c" ! -path "./libft/*")
 
 OBJS = $(SRC:%.c=%.o)
 
-all: $(NAME)
+LIBFT_DIR = libft
+LIBFT = $(LIBFT_DIR)/libft.a
+
+all: $(LIBFT) $(NAME)
+
+# Compila libft primeiro
+$(LIBFT):
+	make -C $(LIBFT_DIR)
 
 	
+# Compila o minishell
 $(NAME): $(OBJS)
-	$(CC) $(FLAGS) -o $(NAME) $(OBJS) -lreadline
-	chmod +x $(NAME) 
+	$(CC) $(CFLAGS) $(CPPFLAGS) -o $(NAME) $(OBJS) -L$(LIBFT_DIR) -lft -lreadline
+	chmod +x $(NAME)
+	rm -f $(OBJS) $(OBJS:.o=.d)
 	echo	"███    ███ ██ ███    ██ ██ ███████ ██   ██ ███████ ██      ██     "
 	echo	"████  ████ ██ ████   ██ ██ ██      ██   ██ ██      ██      ██     "
 	echo	"██ ████ ██ ██ ██ ██  ██ ██ ███████ ███████ █████   ██      ██     "
@@ -21,7 +31,7 @@ $(NAME): $(OBJS)
 	echo	"██      ██ ██ ██   ████ ██ ███████ ██   ██ ███████ ███████ ███████"
 
 %.o: %.c
-	$(CC) $(FLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 clean:
 	rm -f $(OBJS)
