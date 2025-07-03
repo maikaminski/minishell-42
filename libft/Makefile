@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: makamins <makamins@student.42.fr>          +#+  +:+       +#+         #
+#    By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/11/06 19:58:48 by makamins          #+#    #+#              #
-#    Updated: 2024/11/07 18:11:32 by makamins         ###   ########.fr        #
+#    Updated: 2025/07/02 22:08:55 by sabsanto         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,6 +26,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
+	rm -f $(OBJS) $(OBJS:.o=.d)
 
 %.o: %.c
 	gcc $(FLAGS) -c $< -o $@ 
