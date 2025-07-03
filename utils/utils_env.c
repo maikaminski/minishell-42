@@ -3,15 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 17:04:12 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/02 17:31:21 by makamins         ###   ########.fr       */
+/*   Created: 2025/06/17 15:50:12 by makamins          #+#    #+#             */
+/*   Updated: 2025/07/02 21:42:38 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
 
 static t_env	*find_env_key(t_env *env, const char *key)
 {
