@@ -1,2 +1,14 @@
-#include "src/include/minishell.h"
-#include "src/include/garbage_collector.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cd.c                                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/04 14:39:05 by makamins          #+#    #+#             */
+/*   Updated: 2025/07/04 14:39:07 by makamins         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "include/minishell.h"
+#include "include/garbage_collector.h"
