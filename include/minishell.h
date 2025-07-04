@@ -2,10 +2,12 @@
 
 # define MINISHELL_H
 
-# include "./libft/libft.h"
+# include "libft/libft.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <string.h>
+# include <stdbool.h>
+
 //struct de redirecionamentos
 typedef enum e_redir_type
 {
