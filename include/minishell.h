@@ -7,6 +7,7 @@
 # include <stdio.h>
 # include <string.h>
 # include <stdbool.h>
+# include "include/garbage_collector.h"
 
 //struct de redirecionamentos
 typedef enum e_redir_type
@@ -58,6 +59,10 @@ typedef struct	s_minishell
 	int			last_exit; //código de saída do último comando executado
 	int			in_fd; // STDIN original (para restaurar depois)
 	int			out_fd; // STDOUT original (para restaurar depois)
+	t_garbage	*gc;
 }	t_minishell;
 
+
+bool	is_numeric_arg(char *str);
+int	ft_atol(const char *nbr);
 #endif
