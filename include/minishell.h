@@ -65,4 +65,17 @@ typedef struct	s_minishell
 
 bool	is_numeric_arg(char *str);
 int	ft_atol(const char *nbr);
+char	is_space(char c);
+char	is_operator(char c);
+char *ft_strjoin_and_free(char *s1, char *s2, int free_s);
+
+
+void	update_env_value(t_env *found,
+	const char *value, t_garbage **gc);
+void	append_env_node(t_env **env, t_env *new);
+void	set_env_value(t_env **env,
+	const char *key, const char *value, t_garbage **gc);
+	t_env	*find_env_key(t_env *env, const char *key);
+t_env	*create_env_node(const char *key,
+	const char *value, t_garbage **gc);
 #endif

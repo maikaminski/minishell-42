@@ -6,14 +6,14 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 17:04:12 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/02 17:31:21 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/08 13:37:06 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "include/minishell.h"
 #include "include/garbage_collector.h"
 
-static t_env	*find_env_key(t_env *env, const char *key)
+t_env	*find_env_key(t_env *env, const char *key)
 {
 	while (env)
 	{
@@ -24,7 +24,7 @@ static t_env	*find_env_key(t_env *env, const char *key)
 	return (NULL);
 }
 
-static t_env	*create_env_node(const char *key,
+t_env	*create_env_node(const char *key,
 	const char *value, t_garbage **gc)
 {
 	t_env	*node;
