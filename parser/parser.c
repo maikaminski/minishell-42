@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:04:28 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/02 22:04:24 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/07/10 14:36:47 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,19 @@ void	tokenize(char *input)
 				i++;
 			}
 		}
+		else if (input[i] == '\'' || input[i] == '"')
+		{
+			token = extract_quoted_token(input, &i);
+			if (!token)
+				return ;
+			printf("Token: %s\n", token);
+			free(token);
+		}
 		else
 		{
 			start = i;
-			while (i < len && !is_space(input[i]) && !is_operator(input[i]))
+			while (i < len && !is_space(input[i]) && !is_operator(input[i])
+				&& input[i] != '\'' && input[i] != '"')
 				i++;
 			tok_len = i - start;
 			token = malloc(tok_len + 1);

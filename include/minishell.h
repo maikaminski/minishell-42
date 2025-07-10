@@ -71,8 +71,10 @@ typedef struct s_minishell
 }	t_minishell;
 
 /* Protótipos das funções*/
-char     is_space(char c);
-char     is_operator(char c);
+char 	is_space(char c);
+char	is_operator(char c);
+void	tokenize(char *input);
+char	*extract_quoted_token(char *input, int *i);
 
 
 #endif // MINISHELL_H
