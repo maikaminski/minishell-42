@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:00:55 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/11 12:56:29 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:29:15 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 bool	is_valid_identifier(const char *key)
 {

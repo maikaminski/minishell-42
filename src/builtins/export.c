@@ -6,39 +6,28 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 10:02:10 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/11 18:37:39 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 16:01:02 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
-
-t_env	*copy_env_node(t_env *src, t_garbage **gc);
-void	insert_sorted_env_node(t_env **sorted, t_env *new_node);
+#include "minishell.h"
+#include "garbage_collector.h"
 
 bool	is_valid_id_export(const char *key)
 {
 	int	i;
 
-	i = 0;
 	if (!key || key[0] == '\0')
 		return (false);
+	if (!(ft_isalpha(key[0]) || key[0] == '_'))
+		return (false);
+	i = 0;
 	while (key[i] && key[i] != '=')
 	{
-		if (i == 0)
-		{
-			if (!(ft_isalpha(key[0]) || key[0] == '_'))
-				return (false);
-		}
-		else
-		{
-			if (!(ft_isalnum(key[i]) || key[i] != '_'))
+		if (!(ft_isalnum(key[i]) || key[i] != '_'))
 				return (false);	
-		}
 		i++;
 	}
-	if (i == 0)
-		return (false);
 	return (true);
 }
 
@@ -69,22 +58,69 @@ void	print_sorted_env(t_env *env, t_minishell *mini)
 	}
 }
 
-void	export_variable(char *arg, t_minishell *mini)
+int	process_key(char *arg, t_minishell *mini)
 {
-	int	i;
+	int		i;
+	char	*key;
+	char	*value;
 
 	i = 0;
-	if (!arg || arg[0] == '\0')
-		return ;
-	while (arg[i] != '=')
+	while (arg[i] && arg[i] != '=')
+		i++;
+	key = gc_malloc(i + 1, &mini->gc);
+	if (!key)
+		return (1);
+	ft_strlcpy(key, arg, i + 1);
+	if (!is_valid_id_export(key))
 	{
-		
+		print_export_error(arg);
+		return (1);
 	}
-	
+	if (arg[i] == '=')
+		value = arg + i + 1;
+	else
+		value = "";
+	set_env_value(&mini->env, key, value, &mini->gc);
+	return (0);
+}
+
+int	export_variable(char *arg, t_minishell *mini)
+{
+	if (!arg || !mini)
+		return (1);
+	if (ft_strchr(arg, '=') == NULL)
+	{
+		if (!is_valid_id_export(arg))
+		{
+			print_export_error(arg);
+			return (1);
+		}
+		set_env_value(&mini->env, arg, "", &mini->gc);
+	}
+	else
+		process_key(arg, mini);
+	return (0);
 }
 
 int	ft_export(char **argv, t_minishell *mini)
 {
-	
-}
+	int	i;
+	int	status;
 
+	if (!argv || !mini)
+		return (1);
+	if (!argv[1])
+	{
+		print_sorted_env(mini->env, mini);
+		return (0);
+	}
+	i = 1;
+	status = 0;
+	while (argv[i])
+	{
+		if (export_variable(argv[i], mini) != 0)
+			status = 1;
+		i++;
+	}
+	return (status);
+}

@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:24:57 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/04 14:32:51 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:54:23 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 int	ft_exit(char **argv, t_minishell *mini)
 {
@@ -34,5 +34,5 @@ int	ft_exit(char **argv, t_minishell *mini)
 	}
 	exit_code = ft_atol(argv[1]);
 	exit_code = exit_code % 256;
-	exit(exit);
+	exit(exit_code);
 }

@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:28:28 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/04 14:12:25 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:28:10 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 int	ft_env(t_minishell *mini)
 {

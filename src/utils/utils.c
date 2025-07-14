@@ -1,4 +1,5 @@
-#include "../include/minishell.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 char	is_space(char c)
 {

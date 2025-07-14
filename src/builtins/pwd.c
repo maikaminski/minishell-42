@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 13:04:34 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/04 13:13:41 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:28:31 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 int	ft_pwd(t_minishell *mini)
 {

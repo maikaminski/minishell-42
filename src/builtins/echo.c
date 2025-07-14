@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:16:50 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/04 12:56:39 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:27:53 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 int	ft_echo(char **argv, t_minishell *mini)
 {

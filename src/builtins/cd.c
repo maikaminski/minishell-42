@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:39:05 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/08 15:51:16 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:27:46 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/minishell.h"
-#include "include/garbage_collector.h"
+#include "minishell.h"
+#include "garbage_collector.h"
 
 char	*get_env_value(t_env *env, const char *key)
 {
