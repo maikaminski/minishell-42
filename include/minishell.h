@@ -1,11 +1,14 @@
 #ifndef MINISHELL_H
-# define MINISHELL_Hh do commit.
+# define MINISHELL_H
 
 /* Includes de sistema */
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
 # include <string.h>
+# include <stdbool.h>
+# include <stdarg.h>
+
 # include <readline/readline.h>
 # include <readline/history.h>
 
@@ -63,11 +66,12 @@ typedef struct s_env
 
 typedef struct s_minishell
 {
-	t_comands   *comands;    // lista de comandos (um por pipe)
-	t_env       *env;        // lista de variáveis de ambiente
-	int         last_exit;   // código de saída do último comando executado
-	int         in_fd;       // STDIN original (para restaurar)
-	int         out_fd;      // STDOUT original (para restaurar)
+	t_comands	*comands; // lista de comandos (um por pipe)
+	t_env		*env; // lista de variáveis de ambiente
+	int			last_exit; //código de saída do último comando executado
+	int			in_fd; // STDIN original (para restaurar depois)
+	int			out_fd; // STDOUT original (para restaurar depois)
+	t_garbage	*gc;
 }	t_minishell;
 
 /* Protótipos das funções*/
@@ -77,4 +81,37 @@ void	tokenize(char *input);
 char	*extract_quoted_token(char *input, int *i);
 
 
+
+bool	is_numeric_arg(char *str);
+int	ft_atol(const char *nbr);
+char	is_space(char c);
+char	is_operator(char c);
+char *ft_strjoin_and_free(char *s1, char *s2, int free_s);
+
+
+void	update_env_value(t_env *found,
+	const char *value, t_garbage **gc);
+void	append_env_node(t_env **env, t_env *new);
+void	set_env_value(t_env **env,
+	const char *key, const char *value, t_garbage **gc);
+	t_env	*find_env_key(t_env *env, const char *key);
+t_env	*create_env_node(const char *key,
+	const char *value, t_garbage **gc);
+char	*get_env_value(t_env *env, const char *key);
+int	ft_cd(char **argv, t_minishell *mini);
+int	ft_echo(char **argv, t_minishell *mini);
+int	ft_env(t_minishell *mini);
+int	ft_exit(char **argv, t_minishell *mini);
+bool	is_valid_id_export(const char *key);
+void	print_sorted_env(t_env *env, t_minishell *mini);
+int	process_key(char *arg, t_minishell *mini);
+int	export_variable(char *arg, t_minishell *mini);
+int	ft_export(char **argv, t_minishell *mini);
+int	ft_pwd(t_minishell *mini);
+bool	is_valid_identifier(const char *key);
+void	remove_env_node(t_env **env, const char *key);
+int	ft_unset(char **argv, t_minishell *mini);
+t_env	*copy_env_node(t_env *src, t_garbage **gc);
+void	insert_sorted_env_node(t_env **sorted, t_env *new_node);
+void	print_export_error(char *arg);
 #endif // MINISHELL_H
