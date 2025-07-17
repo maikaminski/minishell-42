@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 14:25:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/15 17:32:01 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/17 12:51:41 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,8 @@ static int count_env_entries(t_env *env)
     }
     return (count);
 }
-
+// Converte a lista encadeada de variáveis de ambiente (t_env) em um array
+// de strings no formato "KEY=VALUE", para uso em execve e similares.
 char **env_list_to_array(t_env *env, t_garbage **gc)
 {
     int     i;
@@ -93,3 +94,4 @@ char **env_list_to_array(t_env *env, t_garbage **gc)
     array[i] = NULL;
     return (array);
 }
+// REFATORAR
