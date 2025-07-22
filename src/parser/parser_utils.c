@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 14:34:21 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/21 21:22:41 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/07/22 20:20:23 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ char	*extract_quoted_token(char *input, int *i)
 		return (NULL);
 	}
 	len = *i - start;
-	token = malloc(len + 1);
+	token = gc_malloc(len + 1, &gc);
 	if (!token)
 		return (NULL);
 	ft_strlcpy(token, &input[start], len + 1);
