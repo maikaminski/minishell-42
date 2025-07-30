@@ -137,5 +137,7 @@ int		exec_cmd(char **args, t_env *env, t_garbage **gc);
 void	init_env_list(t_minishell *mini, char **envp);
 void	exec_input(char *input, t_minishell *mini);
 void	free_array(char **arr);
+bool	is_valid_id_export(const char *key);
+void	print_env_line(t_env *node);
 
 #endif // MINISHELL_H
