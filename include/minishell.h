@@ -115,4 +115,9 @@ void	print_export_error(char *arg);
 char **env_list_to_array(t_env *env, t_garbage **gc);
 char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc);
 
+int		exec_cmd(char **args, t_env *env, t_garbage **gc);
+void	init_env_list(t_minishell *mini, char **envp);
+void	exec_input(char *input, t_minishell *mini);
+void	free_array(char **arr);
+
 #endif // MINISHELL_H
