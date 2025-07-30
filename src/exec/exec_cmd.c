@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 19:05:52 by makamins         ###   ########.fr       */
+/*   Updated: 2025/07/30 19:33:03 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 
 int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 {
-	char	*cmd_paths;
+	char	*cmd_path;
 	char	**env_array;
 
 	if (!args || !args[0])
@@ -50,11 +50,11 @@ int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 	env_array = env_list_to_array(env, gc);
 	if (!env_array)
 		return (1);
-	cmd_paths = get_cmd_path(args[0], env, gc);
-	if (!cmd_paths)
+	cmd_path = get_cmd_path(args[0], env, gc);
+	if (!cmd_path)
 	{
 		printf("%s: command not found\n", args[0]);
 		return (127);
 	}
-	return (fork_and_exec(cmd_paths, args, env_array));
+	return (fork_and_exec(cmd_path, args, env_array));
 }
