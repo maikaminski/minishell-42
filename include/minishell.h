@@ -77,6 +77,16 @@ typedef struct s_minishell
 	t_garbage	*gc;
 }	t_minishell;
 
+typedef struct s_exec_data
+{
+	int			num_cmds;
+	int			i;
+	int			pipe_fd[2];
+	int			prev_read_fd;
+	t_commands	*cmd;
+	pid_t		pid;
+}	t_exec_data;
+
 /* Protótipos das funções de parsing */
 void	tokenize(char *input);
 char	*handle_single_quotes(char *input, int *i, t_minishell *mini);
@@ -139,5 +149,15 @@ void	exec_input(char *input, t_minishell *mini);
 void	free_array(char **arr);
 bool	is_valid_id_export(const char *key);
 void	print_env_line(t_env *node);
+
+/* Execução de pipe*/
+
+void	setup_initial_vars(t_exec_data *data, t_commands *cmd_list);
+int		create_pipe_if_needed(t_commands *cmd, int pipe_fd[2]);
+void	child_procces_logic(t_commands *cmd, int prev_read_fd, 
+	int pipe_fd[2], t_minishell *mini);
+void	parent_procces_logic(int *prev_read_fd,
+	int pipe_fd[2], t_commands *cmd);
+int		exec_single_command(t_exec_data *data, t_minishell *mini);
 
 #endif // MINISHELL_H
