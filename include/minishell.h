@@ -9,13 +9,13 @@
 # include <stdbool.h>
 # include <stdarg.h>
 # include <sys/wait.h>
+# include <fcntl.h>
 
 # include <readline/readline.h>
 # include <readline/history.h>
 
 /*Includes de sistema que vamos usar em breve
 # include <sys/stat.h>
-# include <fcntl.h>
 # include <signal.h>
 # include <errno.h>*/
 
