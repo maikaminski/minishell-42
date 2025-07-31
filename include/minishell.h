@@ -98,6 +98,8 @@ char	*expand_variables(char *str, t_minishell *mini);
 char	*extract_var_name(char *str, int *pos, t_garbage **gc);
 char	*get_var_value(char *var_name, t_minishell *mini);
 char	*extract_raw_content(char *input, int start, int len, t_garbage **gc);
+char	*extract_raw_content(char *input, int start, int len, t_garbage **gc);
+char	*process_dollar_sign(char *str, int *i, char *result, t_minishell *mini);
 
 /* Protótipos das funções auxiliares de string */
 char	*join_strings(char *s1, char *s2, t_garbage **gc);
