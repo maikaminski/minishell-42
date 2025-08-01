@@ -46,6 +46,12 @@ typedef enum e_tokens
 	T_REDIR_HEREDOC
 }	t_tokens;
 
+typedef struct s_token {
+	t_tokens		type;     // T_WORD, T_PIPE, etc.
+	char			*value;   // "cat", "|", "arquivo.txt", etc.
+	struct s_token	*next;
+} t_token;
+
 typedef struct s_redir
 {
 	t_redir_type     type;   // tipo de redirecionamento

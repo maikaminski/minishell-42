@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:04:28 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/31 18:43:33 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/01 14:51:20 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,10 +63,10 @@ static t_tokens	get_operator_type(char *input, int pos)
 	return (T_WORD);
 }
 
-static void	process_operator_token(char *input, int *i, t_token **tokens, t_garbage **gc)
+static void	process_operator_token(char *input, int *i, t_tokens **tokens, t_garbage **gc)
 {
 	t_tokens	type;
-	t_token		*new_token;
+	t_tokens		*new_token;
 
 	type = get_operator_type(input, *i);
 	if ((input[*i] == '>' || input[*i] == '<') && input[*i + 1] == input[*i])

@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 13:21:05 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/31 16:33:52 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/01 15:15:06 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	setup_output_redirection(t_redir *redir)
 	if (redir->type == REDIR_OUT)
 		fd = open(redir->file, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	else if (redir->type == REDIR_APPEND)
-		fd = open(redir->file, O_CREAT | O_RDONLY | O_APPEND, 0644);
+		fd = open(redir->file, O_CREAT | O_WRONLY | O_APPEND, 0644);
 	else
 		return (-1);
 	if (fd < 0)
