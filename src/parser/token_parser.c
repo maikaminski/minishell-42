@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   token_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:53:15 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/31 18:45:33 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/01 15:11:55 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // Determina o tipo de redirecionamento baseado no token
-static t_redir_type	get_redir_type(t_tokens token_type)
+static t_redir_type	get_redir_type(t_tokens *token_type)
 {
 	if (token_type == T_REDIR_IN)
 		return (REDIR_IN);
@@ -31,8 +31,8 @@ static int	handle_redirection(t_token **current, t_commands *cmd, t_garbage **gc
 {
 	t_redir_type	redir_type;
 	t_redir			*new_redir;
-	t_token			*redir_token;
-	t_token			*file_token;
+	t_token		*redir_token;
+	t_token		*file_token;
 
 	redir_token = *current;
 	redir_type = get_redir_type(redir_token->type);
@@ -57,7 +57,7 @@ static int	handle_redirection(t_token **current, t_commands *cmd, t_garbage **gc
 static t_commands	*parse_single_command(t_token **tokens, t_garbage **gc)
 {
 	t_commands	*cmd;
-	t_token		*current;
+	t_token	*current;
 
 	cmd = create_command_node(gc);
 	if (!cmd)
@@ -89,7 +89,7 @@ t_commands	*parse_tokens_to_commands(t_token *tokens, t_garbage **gc)
 {
 	t_commands	*cmd_list;
 	t_commands	*new_cmd;
-	t_token		*current;
+	t_token	*current;
 
 	cmd_list = NULL;
 	current = tokens;
