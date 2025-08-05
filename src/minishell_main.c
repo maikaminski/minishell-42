@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/04 15:16:02 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/05 15:56:07 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 		}
 		
 		// Aplica redirecionamentos
-		if (cmd->redir && handle_redirections(cmd->redir) == -1)
+		if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		{
 			mini->last_exit = 1;
 			return ;
@@ -115,7 +115,7 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 		{
 			// Processo filho
 			// Aplica redirecionamentos
-			if (cmd->redir && handle_redirections(cmd->redir) == -1)
+			if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 				exit(1);
 			
 			// Prepara o ambiente e executa

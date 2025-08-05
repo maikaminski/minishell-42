@@ -183,9 +183,10 @@ void	wait_all_children(int n);
 int		execute_pipeline(t_commands *cmd_list, t_minishell *mini);
 
 /* Redirecionamentos */
-int		handle_redirections(t_redir *redir_list);
+int		handle_redirections(t_redir *redir_list, t_minishell *mini);
 int		setup_output_redirection(t_redir *redir);
 int		handle_input_redirection(t_redir *redir, t_minishell *mini);
 int		setup_input_redirections(t_commands *cmd, t_minishell *mini);
+int		handle_heredoc_redirection(t_redir *redir, t_minishell *mini);
 
 #endif // MINISHELL_H
