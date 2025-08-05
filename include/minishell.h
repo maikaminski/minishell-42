@@ -46,11 +46,12 @@ typedef enum e_tokens
 	T_REDIR_HEREDOC
 }	t_tokens;
 
-typedef struct s_token {
+typedef struct s_token
+{
 	t_tokens		type;     // T_WORD, T_PIPE, etc.
 	char			*value;   // "cat", "|", "arquivo.txt", etc.
 	struct s_token	*next;
-} t_token;
+}	t_token;
 
 typedef struct s_redir
 {
@@ -94,10 +95,21 @@ typedef struct s_exec_data
 }	t_exec_data;
 
 /* Protótipos das funções de parsing */
-void	tokenize(char *input);
+t_token	*tokenize(char *input, t_minishell *mini);
 char	*handle_single_quotes(char *input, int *i, t_minishell *mini);
 char	*handle_double_quotes(char *input, int *i, t_minishell *mini);
 char	*extract_quoted_token(char *input, int *i, t_minishell *mini);
+
+/* Funções do command_builder.c */
+t_commands	*create_command_node(t_garbage **gc);
+t_redir		*create_redir_node(t_redir_type type, char *file, t_garbage **gc);
+void		add_redir_to_command(t_commands *cmd, t_redir *new_redir);
+int			add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc);
+void		add_command_to_list(t_commands **list, t_commands *new_cmd);
+
+/* Funções do token_parser.c */
+t_commands	*parse_tokens_to_commands(t_token *tokens, t_garbage **gc);
+void		print_command_structure(t_commands *cmd_list);
 
 /* Protótipos das funções de expansão */
 char	*expand_variables(char *str, t_minishell *mini);
@@ -159,13 +171,21 @@ bool	is_valid_id_export(const char *key);
 void	print_env_line(t_env *node);
 
 /* Execução de pipe*/
-
+int		count_commands(t_commands *cmd_list);
 void	setup_initial_vars(t_exec_data *data, t_commands *cmd_list);
 int		create_pipe_if_needed(t_commands *cmd, int pipe_fd[2]);
 void	child_procces_logic(t_commands *cmd, int prev_read_fd, 
-	int pipe_fd[2], t_minishell *mini);
+			int pipe_fd[2], t_minishell *mini);
 void	parent_procces_logic(int *prev_read_fd,
-	int pipe_fd[2], t_commands *cmd);
+			int pipe_fd[2], t_commands *cmd);
 int		exec_single_command(t_exec_data *data, t_minishell *mini);
+void	wait_all_children(int n);
+int		execute_pipeline(t_commands *cmd_list, t_minishell *mini);
+
+/* Redirecionamentos */
+int		handle_redirections(t_redir *redir_list);
+int		setup_output_redirection(t_redir *redir);
+int		handle_input_redirection(t_redir *redir, t_minishell *mini);
+int		setup_input_redirections(t_commands *cmd, t_minishell *mini);
 
 #endif // MINISHELL_H
