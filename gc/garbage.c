@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:35:36 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/02 22:23:53 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:06:51 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,27 @@ int	gc_add_ptr(void *ptr, t_garbage **gc)
 {
 	t_garbage	*new_node;
 
+	if (!gc || !*gc)
+	{
+		fprintf(stderr, "ERRO: gc ou *gc é NULL ao tentar adicionar ponteiro %p\n", ptr);
+		return (1);  // Erro!
+	}
+
 	new_node = malloc(sizeof(t_garbage));
 	if (!new_node)
-		return (1);
+	{
+		fprintf(stderr, "ERRO: malloc falhou em gc_add_ptr ao adicionar ponteiro %p\n", ptr);
+		return (1);  // Erro!
+	}
+
 	new_node->ptr = ptr;
 	new_node->next = *gc;
 	*gc = new_node;
-	return (0);
+
+	printf("DEBUG: gc_add_ptr adicionou ptr = %p com sucesso\n", ptr);
+	return (0);  // Sucesso!
 }
+
 
 void	gc_free_all(t_garbage **gc)
 {

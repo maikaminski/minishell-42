@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/04 15:16:28 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 11:27:14 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,7 @@ void	child_procces_logic(t_commands *cmd, int prev_read_fd,
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc);
 	if (!cmd_path)
 	{
-		printf("%s: command not found\n", cmd->argv[0]);
+		printf("%s: command not found 3\n", cmd->argv[0]);
 		exit(127);
 	}
 	

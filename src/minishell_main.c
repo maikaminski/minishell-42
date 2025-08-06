@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/04 15:16:02 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:32:22 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 			char *cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc);
 			if (!cmd_path)
 			{
-				printf("%s: command not found\n", cmd->argv[0]);
+				printf("%s: command not found 1\n", cmd->argv[0]);
 				exit(127);
 			}
 			
@@ -150,6 +150,8 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 		}
 	}
 }
+
+
 
 // Processa a linha de comando
 static void	process_command_line(char *input, t_minishell *mini)
@@ -191,6 +193,7 @@ static void cleanup_readline(void)
 	rl_clear_pending_input();
 	rl_cleanup_after_signal();
 }
+
 
 int	main(void)
 {
