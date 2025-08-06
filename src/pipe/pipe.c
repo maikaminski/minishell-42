@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 16:59:44 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:55:29 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,11 @@ void	child_procces_logic(t_commands *cmd, int prev_read_fd,
 	}
 	
 	// Comando externo
-	envp = env_list_to_array(mini->env, &mini->gc);
+	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
 		exit(1);
 		
-	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc);
+	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
 	{
 		printf("%s: command not found 3\n", cmd->argv[0]);

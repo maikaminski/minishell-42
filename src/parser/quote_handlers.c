@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:21:58 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/31 01:37:45 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 18:54:09 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ char	*handle_single_quotes(char *input, int *i, t_minishell *mini)
 		return (NULL);
 	}
 	len = *i - start;
-	token = gc_malloc(len + 1, &mini->gc);
+	token = gc_malloc(len + 1, &mini->gc_temp);
 	if (!token)
 		return (NULL);
 	ft_strlcpy(token, &input[start], len + 1);
@@ -68,7 +68,7 @@ char	*handle_double_quotes(char *input, int *i, t_minishell *mini)
 	len = find_closing_double_quote(input, i);
 	if (len == -1)
 		return (NULL);
-	raw_token = extract_raw_content(input, start, len, &mini->gc);
+	raw_token = extract_raw_content(input, start, len, &mini->gc_temp);
 	if (!raw_token)
 		return (NULL);
 	expanded_token = expand_variables(raw_token, mini);

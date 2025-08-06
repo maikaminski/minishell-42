@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 16:57:17 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 20:23:37 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 	pid_t	pid;
 	int		status;
 	char	**envp;
+	char	*cmd_path;
 
 	if (!cmd || !cmd->argv || !cmd->argv[0])
 		return ;
@@ -119,15 +120,16 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 				exit(1);
 			
 			// Prepara o ambiente e executa
-			envp = env_list_to_array(mini->env, &mini->gc);
+			envp = env_list_to_array(mini->env, &mini->gc_temp);
 			if (!envp)
 				exit(1);
 			
 			// Tenta encontrar e executar o comando
-			char *cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc);
+			cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 			if (!cmd_path)
 			{
-				printf("%s: command not found 1\n", cmd->argv[0]);
+				write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
+				write(2, ": command not found\n", 20);
 				exit(127);
 			}
 			
@@ -151,8 +153,6 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 	}
 }
 
-
-
 // Processa a linha de comando
 static void	process_command_line(char *input, t_minishell *mini)
 {
@@ -165,12 +165,12 @@ static void	process_command_line(char *input, t_minishell *mini)
 		return ;
 	
 	// Parseia tokens em comandos
-	commands = parse_tokens_to_commands(tokens, &mini->gc);
+	commands = parse_tokens_to_commands(tokens, &mini->gc_temp);
 	if (!commands)
 		return ;
 	
-	// Debug: imprime a estrutura de comandos
-	print_command_structure(commands);
+	// Debug: imprime a estrutura de comandos (remover em produção)
+	// print_command_structure(commands);
 	
 	// Executa os comandos
 	if (commands && !commands->next)
@@ -181,7 +181,6 @@ static void	process_command_line(char *input, t_minishell *mini)
 	else if (commands && commands->next)
 	{
 		// Pipeline de comandos
-		printf("Executando pipeline...\n");
 		execute_pipeline(commands, mini);
 	}
 }
@@ -194,53 +193,58 @@ static void cleanup_readline(void)
 	rl_cleanup_after_signal();
 }
 
-
-int	main(void)
+int main(void)
 {
-	char		*input;
-	t_minishell	mini;
-
-	// Inicializa a estrutura minishell
-	mini = (t_minishell){0};
-	mini.last_exit = 0;
-	mini.in_fd = STDIN_FILENO;
-	mini.out_fd = STDOUT_FILENO;
-	init_env_list(&mini, __environ);
-
-	// Configurar sinais para modo interativo
-	setup_signals_interactive();
-
-	while (1)
-	{
-		input = readline("minishell> ");
-		
-		// Ctrl-D (EOF)
-		if (!input)
-		{
-			printf("exit\n");
-			break;
-		}
-		
-		// Processar sinal SIGINT (Ctrl-C)
-		if (g_signal_received == SIGINT)
-		{
-			mini.last_exit = 130;
-			g_signal_received = 0;
-		}
-		
-		// Comando não vazio
-		if (*input)
-		{
-			add_history(input);
-			process_command_line(input, &mini);
-		}
-		
-		free(input);
-	}
-	
-	// Limpeza final
-	cleanup_readline();
-	rl_clear_history();
-	gc_free_all(&mini.gc);
-	return (mini.last_exit);
+    char *input;
+    t_minishell mini;
+    
+    // Inicializa AMBOS os garbage collectors
+    mini = (t_minishell){0};
+    mini.last_exit = 0;
+    mini.in_fd = STDIN_FILENO;
+    mini.out_fd = STDOUT_FILENO;
+    mini.gc_persistent = NULL;  // Para ambiente
+    mini.gc_temp = NULL;        // Para comandos temporários
+    
+    // Ambiente usa gc_persistent
+    init_env_list(&mini, __environ);
+    setup_signals_interactive();
+    
+    while (1)
+    {
+        input = readline("minishell> ");
+        
+        if (!input)
+        {
+            printf("exit\n");
+            break;
+        }
+        
+        if (g_signal_received == SIGINT)
+        {
+            mini.last_exit = 130;
+            g_signal_received = 0;
+        }
+        
+        if (*input)
+        {
+            add_history(input);
+            process_command_line(input, &mini);
+        }
+        
+        free(input);
+        
+        // MUDANÇA CRÍTICA: libera apenas dados temporários
+        gc_free_all(&mini.gc_temp);  // ← SÓ o temporário!
+        // mini.gc_persistent permanece intacto
+    }
+    
+    // Limpeza final: libera TUDO
+    cleanup_readline();
+    rl_clear_history();
+    gc_free_all(&mini.gc_temp);
+    gc_free_all(&mini.gc_persistent);
+    
+    return (mini.last_exit);
 }
+

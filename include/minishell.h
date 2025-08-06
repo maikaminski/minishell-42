@@ -81,7 +81,8 @@ typedef struct s_minishell
 	int			last_exit;	//código de saída do último comando executado
 	int			in_fd;		// STDIN original (para restaurar)
 	int			out_fd;		// STDOUT original (para restaurar)
-	t_garbage	*gc;
+	t_garbage *gc_persistent;  // Para ambiente e dados permanentes
+    t_garbage *gc_temp;        // Para dados temporários de cada comando
 }	t_minishell;
 
 typedef struct s_exec_data

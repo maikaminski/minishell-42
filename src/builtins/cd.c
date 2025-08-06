@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:39:05 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 18:05:08 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:50:32 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,15 +56,15 @@ static char	*change_dir(const char *path, t_minishell *mini)
 		perror("cd");
 		return (NULL);
 	}
-	gc_add_ptr(cwd, &mini->gc);
+	gc_add_ptr(cwd, &mini->gc_temp);
 	return (cwd);
 }
 
 static void	update_pwd_vars(t_minishell *mini,
 	const char *oldpwd, const char *newpwd)
 {
-	set_env_value(&mini->env, "OLDPWD", oldpwd, &mini->gc);
-	set_env_value(&mini->env, "PWD", newpwd, &mini->gc);
+	set_env_value(&mini->env, "OLDPWD", oldpwd, &mini->gc_persistent);
+	set_env_value(&mini->env, "PWD", newpwd, &mini->gc_persistent);
 }
 
 int	ft_cd(char **argv, t_minishell *mini)
@@ -79,7 +79,7 @@ int	ft_cd(char **argv, t_minishell *mini)
 		perror("cd");
 		return (1);
 	}
-	gc_add_ptr(oldpwd, &mini->gc);
+	gc_add_ptr(oldpwd, &mini->gc_temp);
 	target = get_target_path(argv, mini);
 	if (!target)
 		return (1);
@@ -89,7 +89,7 @@ int	ft_cd(char **argv, t_minishell *mini)
 		perror("cd");
 		return (1);
 	}
-	gc_add_ptr(newpwd, &mini->gc);
+	gc_add_ptr(newpwd, &mini->gc_temp);
 	update_pwd_vars(mini, oldpwd, newpwd);
 	return (0);
 }

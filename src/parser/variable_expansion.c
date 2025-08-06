@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/05 23:27:14 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:14:43 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ char	*get_var_value(char *var_name, t_minishell *mini)
 	char	*exit_str;
 
 	if (!var_name)
-		return (create_empty_string(&mini->gc));
+		return (create_empty_string(&mini->gc_temp));
 	
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		exit_str = ft_itoa(mini->last_exit);
 		if (!exit_str)
-			return (create_empty_string(&mini->gc));
+			return (create_empty_string(&mini->gc_temp));
 		
-		value = gc_malloc(ft_strlen(exit_str) + 1, &mini->gc);
+		value = gc_malloc(ft_strlen(exit_str) + 1, &mini->gc_temp);
 		if (!value)
 		{
 			free(exit_str);
-			return (create_empty_string(&mini->gc));
+			return (create_empty_string(&mini->gc_temp));
 		}
 		
 		ft_strlcpy(value, exit_str, ft_strlen(exit_str) + 1);
@@ -75,7 +75,7 @@ char	*get_var_value(char *var_name, t_minishell *mini)
 	
 	value = get_env_value(mini->env, var_name);
 	if (!value)
-		return (create_empty_string(&mini->gc));
+		return (create_empty_string(&mini->gc_temp));
 	
 	return (value);
 }
@@ -115,7 +115,7 @@ char	*expand_variables(char *str, t_minishell *mini)
 
 	if (!str)
 		return (NULL);
-	result = gc_malloc(1, &mini->gc);
+	result = gc_malloc(1, &mini->gc_temp);
 	if (!result)
 		return (NULL);
 	result[0] = '\0';
@@ -125,7 +125,7 @@ char	*expand_variables(char *str, t_minishell *mini)
 		if (str[i] == '$')
 			result = process_dollar_sign(str, &i, result, mini);
 		else
-			result = append_char(result, str[i++], &mini->gc);
+			result = append_char(result, str[i++], &mini->gc_temp);
 	}
 	return (result);
 }

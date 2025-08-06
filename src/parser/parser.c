@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:04:28 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/04 15:14:07 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:17:33 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,10 @@ static void	process_operator_token(char *input, int *i, t_token **tokens, t_garb
 
 	type = get_operator_type(input, *i);
 	if ((input[*i] == '>' || input[*i] == '<') && input[*i + 1] == input[*i])
-	{
-		new_token = create_token(NULL, type, gc);
-		printf("Token: %c%c\n", input[*i], input[*i + 1]);  // Mantém o debug
 		*i += 2;
-	}
 	else
-	{
-		new_token = create_token(NULL, type, gc);
-		printf("Token: %c\n", input[*i]);  // Mantém o debug
 		(*i)++;
-	}
+	new_token = create_token(NULL, type, gc);
 	if (new_token)
 		add_token_to_list(tokens, new_token);
 }
@@ -99,8 +92,7 @@ static void	process_quoted_token(char *input, int *i, t_minishell *mini, t_token
 		value = NULL;
 	if (!value)
 		return ;
-	printf("Token: %s\n", value);  // Mantém o debug
-	new_token = create_token(value, T_WORD, &mini->gc);
+	new_token = create_token(value, T_WORD, &mini->gc_temp);
 	if (new_token)
 		add_token_to_list(tokens, new_token);
 }
@@ -118,20 +110,18 @@ static void	process_word_token(char *input, int *i, int len, t_minishell *mini, 
 		&& input[*i] != '\'' && input[*i] != '"')
 		(*i)++;
 	tok_len = *i - start;
-	value = gc_malloc(tok_len + 1, &mini->gc);
+	value = gc_malloc(tok_len + 1, &mini->gc_temp);
 	if (!value)
 		return ;
 	ft_strlcpy(value, &input[start], tok_len + 1);
 	expanded = expand_variables(value, mini);
 	if (expanded)
 	{
-		printf("Token: %s\n", expanded);  // Mantém o debug
-		new_token = create_token(expanded, T_WORD, &mini->gc);
+		new_token = create_token(expanded, T_WORD, &mini->gc_temp);
 	}
 	else
 	{
-		printf("Token: %s\n", value);  // Mantém o debug
-		new_token = create_token(value, T_WORD, &mini->gc);
+		new_token = create_token(value, T_WORD, &mini->gc_temp);
 	}
 	if (new_token)
 		add_token_to_list(tokens, new_token);
@@ -142,39 +132,25 @@ t_token	*tokenize(char *input, t_minishell *mini)
 	t_token		*tokens;
 	int			i;
 	int			len;
-	t_minishell	temp_mini;
 
-	if (!input)
+	if (!input || !mini)
 		return (NULL);
-		
-	// Se mini não foi passado, cria um temporário
-	temp_mini = (t_minishell){0};
-	if (!mini)
-	{
-		mini = &temp_mini;
-		init_env_list(mini, __environ);
-	}
 	
 	tokens = NULL;
 	i = 0;
 	len = ft_strlen(input);
-	printf("Tokens encontrados:\n");
 
 	while (i < len)
 	{
 		if (is_space(input[i]))
 			i++;
 		else if (is_operator(input[i]))
-			process_operator_token(input, &i, &tokens, &mini->gc);
+			process_operator_token(input, &i, &tokens, &mini->gc_temp);
 		else if (input[i] == '\'' || input[i] == '"')
 			process_quoted_token(input, &i, mini, &tokens);
 		else
 			process_word_token(input, &i, len, mini, &tokens);
 	}
-
-	// Se usamos mini temporário, limpa
-	if (mini == &temp_mini)
-		gc_free_all(&mini->gc);
 
 	return (tokens);
 }

@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 15:47:21 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/05 23:11:47 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 19:54:57 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ static int	heredoc_loop(int write_fd, const char *delimiter, t_minishell *mini)
 	while (1)
 	{
 		write(1, "> ", 2);
-		line = read_line_stdin(&mini->gc);
+		line = read_line_stdin(&mini->gc_temp);
 		if (!line)
 			return (-1);
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
