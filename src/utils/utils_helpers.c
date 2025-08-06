@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/06 20:44:00 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 20:44:17 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 20:53:06 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,21 +57,4 @@ void	ft_putnbr_fd(int n, int fd)
 	
 	ft_itoa_buf(n, buf);
 	write(fd, buf, ft_strlen(buf));
-}
-
-// Libera array de strings
-void	free_array(char **arr)
-{
-	int	i;
-	
-	if (!arr)
-		return ;
-	
-	i = 0;
-	while (arr[i])
-	{
-		free(arr[i]);
-		i++;
-	}
-	free(arr);
 }

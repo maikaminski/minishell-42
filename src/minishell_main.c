@@ -6,15 +6,17 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 20:43:14 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 20:52:14 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
+// Variável global para sinais
 volatile sig_atomic_t	g_signal_received = 0;
 
+// Verifica se o comando é um builtin
 static int	is_builtin(char *cmd)
 {
 	if (!cmd)
@@ -232,7 +234,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		// Limpa garbage collector temporário
-		gc_cleanup(&mini.gc_temp);
+		gc_free_all(&mini.gc_temp);
 		
 		// Lê entrada do usuário
 		input = readline("minishell> ");
@@ -269,8 +271,8 @@ int	main(int argc, char **argv, char **envp)
 	}
 	
 	// Limpa tudo antes de sair
-	gc_cleanup(&mini.gc_persistent);
-	gc_cleanup(&mini.gc_temp);
+	gc_free_all(&mini.gc_persistent);
+	gc_free_all(&mini.gc_temp);
 	
 	// Restaura file descriptors
 	dup2(mini.in_fd, STDIN_FILENO);
@@ -280,3 +282,4 @@ int	main(int argc, char **argv, char **envp)
 	
 	return (mini.last_exit);
 }
+
