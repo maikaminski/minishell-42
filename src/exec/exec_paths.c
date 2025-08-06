@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:07:43 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 16:15:28 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:59:21 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,12 +39,9 @@ char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
 	{
 		printf("DEBUG: path %d = %s\n", i, paths[i]);
 		full_path = construct_path(paths[i], cmd, gc);
-		printf("DEBUG: trying path: %s\n", full_path);
-		if (access(full_path, X_OK) == 0)
-		{
-			printf("DEBUG: FOUND at %s\n", full_path);
+		if (full_path && access(full_path, X_OK) == 0)
 			return (full_path);
-		}
+		
 		i++;
 	}
 	printf("DEBUG: comando não encontrado em nenhum path\n");
@@ -115,6 +112,8 @@ char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
 
 // Extrai o valor da variável PATH da env list, divide nos diretórios,
 // e registra cada string no garbage collector.
+
+
 char	**get_paths(t_env *env, t_garbage **gc)
 {
 	int		i;
@@ -209,8 +208,6 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 		printf("DEBUG: cmd vazio ou nulo em get_cmd_path\n");
 		return (NULL);
 	}
-	printf("DEBUG: cmd recebido = '%s'\n", cmd);
-
 	if (access(cmd, X_OK) == 0)
 	{
 		printf("DEBUG: cmd é caminho executável direto\n");
@@ -221,7 +218,11 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 	}
 	paths = get_paths(env, gc);
 	if (!paths)
+	{
+		printf("DEBUG: get_paths retornou NULL\n");
 		return (NULL);
+	}
+	printf("DEBUG: chamando find_cmd_in_paths() com cmd = '%s'\n", cmd);
 	cmd_path = find_cmd_in_paths(paths, cmd, gc);
 	if (cmd_path && !gc_add_ptr(cmd_path, gc))
 		return (NULL);

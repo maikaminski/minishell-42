@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 11:27:14 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 16:59:44 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,9 +115,7 @@ void	child_procces_logic(t_commands *cmd, int prev_read_fd,
 		dup2(pipe_fd[1], STDOUT_FILENO);
 		close(pipe_fd[1]);
 	}
-	
-	// Aplica redirecionamentos do comando (>, <, >>, <<)
-	if (cmd->redir && handle_redirections(cmd->redir) == -1)
+	if (handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
 	
 	// Se for builtin, executa diretamente

@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/31 01:34:44 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/05 23:27:14 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,24 +54,29 @@ char	*get_var_value(char *var_name, t_minishell *mini)
 
 	if (!var_name)
 		return (create_empty_string(&mini->gc));
+	
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		exit_str = ft_itoa(mini->last_exit);
 		if (!exit_str)
 			return (create_empty_string(&mini->gc));
+		
 		value = gc_malloc(ft_strlen(exit_str) + 1, &mini->gc);
 		if (!value)
 		{
 			free(exit_str);
 			return (create_empty_string(&mini->gc));
 		}
+		
 		ft_strlcpy(value, exit_str, ft_strlen(exit_str) + 1);
 		free(exit_str);
 		return (value);
 	}
+	
 	value = get_env_value(mini->env, var_name);
 	if (!value)
 		return (create_empty_string(&mini->gc));
+	
 	return (value);
 }
 
