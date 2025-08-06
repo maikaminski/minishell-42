@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/05 15:56:07 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 00:16:01 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,33 +204,40 @@ int	main(void)
 	mini.out_fd = STDOUT_FILENO;
 	init_env_list(&mini, __environ);
 
+	// Configurar sinais para modo interativo
+	setup_signals_interactive();
+
 	while (1)
 	{
 		input = readline("minishell> ");
+		
+		// Ctrl-D (EOF)
 		if (!input)
 		{
-			printf("\nexit\n");
-			break ;
+			printf("exit\n");
+			break;
 		}
+		
+		// Processar sinal SIGINT (Ctrl-C)
+		if (g_signal_received == SIGINT)
+		{
+			mini.last_exit = 130;
+			g_signal_received = 0;
+		}
+		
+		// Comando não vazio
 		if (*input)
 		{
 			add_history(input);
 			process_command_line(input, &mini);
 		}
-		free(input);
 		
-		// Limpa apenas os comandos, mantém o ambiente
-		t_commands *cmd = mini.commands;
-		while (cmd)
-		{
-			t_commands *next = cmd->next;
-			cmd = next;
-		}
-		mini.commands = NULL;
+		free(input);
 	}
 	
 	// Limpeza final
 	cleanup_readline();
+	rl_clear_history();
 	gc_free_all(&mini.gc);
 	return (mini.last_exit);
 }

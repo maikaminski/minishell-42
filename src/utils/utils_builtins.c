@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_builtins.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 16:56:34 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 18:16:12 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 00:08:48 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,7 +113,7 @@ void	insert_sorted_env_node(t_env **sorted, t_env *new_node)
 // 	}
 // }
 
-void	print_export_error(char *arg)
+void	print_export_error(const char *arg)
 {
 	write(2, "export: `", 9);
 	write(2, arg, ft_strlen(arg));
