@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 12:16:50 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 18:06:10 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/05 23:21:35 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,24 +16,35 @@
 int	ft_echo(char **argv, t_minishell *mini)
 {
 	int		i;
-	bool	new_line;
+	bool	newline;
 
 	(void)mini;
 	i = 1;
-	new_line = true;
-	while (argv[i] && !ft_strncmp(argv[i], "-n", 3))
+	newline = true;
+	
+	// Processar múltiplos flags -n consecutivos
+	while (argv[i] && ft_strncmp(argv[i], "-n", 2) == 0)
 	{
-		new_line = false;
-		i++;
+		int j = 1;
+		while (argv[i][j] == 'n')
+			j++;
+		if (argv[i][j] == '\0')
+		{
+			newline = false;
+			i++;
+		}
+		else
+			break;
 	}
+	// Imprimir argumentos
 	while (argv[i])
 	{
-		write (1, argv[i], ft_strlen(argv[i]));
+		write(STDOUT_FILENO, argv[i], ft_strlen(argv[i]));
 		if (argv[i + 1])
-			write(1, " ", 1);
+			write(STDOUT_FILENO, " ", 1);
 		i++;
 	}
-	if (new_line)
-		write(1, "\n", 1);
+	if (newline)
+		write(STDOUT_FILENO, "\n", 1);
 	return (0);
 }
