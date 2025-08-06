@@ -6,14 +6,15 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 20:23:37 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 20:43:14 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
-// Verifica se o comando é um builtin
+volatile sig_atomic_t	g_signal_received = 0;
+
 static int	is_builtin(char *cmd)
 {
 	if (!cmd)
@@ -73,24 +74,30 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 		int saved_stdin = -1;
 		int saved_stdout = -1;
 		
-		// Salva file descriptors originais se houver redirecionamentos
 		if (cmd->redir)
 		{
 			saved_stdin = dup(STDIN_FILENO);
 			saved_stdout = dup(STDOUT_FILENO);
 		}
 		
-		// Aplica redirecionamentos
 		if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		{
 			mini->last_exit = 1;
+			if (saved_stdin != -1)
+			{
+				dup2(saved_stdin, STDIN_FILENO);
+				close(saved_stdin);
+			}
+			if (saved_stdout != -1)
+			{
+				dup2(saved_stdout, STDOUT_FILENO);
+				close(saved_stdout);
+			}
 			return ;
 		}
 		
-		// Executa o builtin
 		mini->last_exit = execute_builtin(cmd, mini);
 		
-		// Restaura file descriptors originais
 		if (saved_stdin != -1)
 		{
 			dup2(saved_stdin, STDIN_FILENO);
@@ -145,106 +152,131 @@ static void	execute_simple_command(t_commands *cmd, t_minishell *mini)
 				perror("waitpid");
 				mini->last_exit = 1;
 			}
-			else if (WIFEXITED(status))
+			else
 			{
-				mini->last_exit = WEXITSTATUS(status);
+				if (WIFEXITED(status))
+					mini->last_exit = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+					mini->last_exit = 128 + WTERMSIG(status);
 			}
 		}
 	}
 }
 
-// Processa a linha de comando
+// Processa uma linha de comando
 static void	process_command_line(char *input, t_minishell *mini)
 {
 	t_token		*tokens;
-	t_commands	*commands;
+	t_commands	*cmd_list;
 
 	// Tokeniza a entrada
 	tokens = tokenize(input, mini);
 	if (!tokens)
 		return ;
 	
-	// Parseia tokens em comandos
-	commands = parse_tokens_to_commands(tokens, &mini->gc_temp);
-	if (!commands)
+	// Converte tokens em comandos
+	cmd_list = parse_tokens_to_commands(tokens, &mini->gc_temp);
+	if (!cmd_list)
 		return ;
 	
-	// Debug: imprime a estrutura de comandos (remover em produção)
-	// print_command_structure(commands);
+	// Salva lista de comandos
+	mini->commands = cmd_list;
 	
-	// Executa os comandos
-	if (commands && !commands->next)
+	// Executa comandos
+	if (cmd_list->next)
 	{
-		// Comando único (sem pipes)
-		execute_simple_command(commands, mini);
+		// Pipeline
+		mini->last_exit = execute_pipeline(cmd_list, mini);
 	}
-	else if (commands && commands->next)
+	else
 	{
-		// Pipeline de comandos
-		execute_pipeline(commands, mini);
+		// Comando simples
+		execute_simple_command(cmd_list, mini);
 	}
 }
 
-// Limpeza do readline
-static void cleanup_readline(void)
+// Inicializa a estrutura minishell
+static void	init_minishell(t_minishell *mini, char **envp)
 {
-	clear_history();
-	rl_clear_pending_input();
-	rl_cleanup_after_signal();
+	// Inicializa garbage collectors
+	mini->gc_persistent = NULL;
+	mini->gc_temp = NULL;
+	
+	// Inicializa estrutura
+	mini->commands = NULL;
+	mini->env = NULL;
+	mini->last_exit = 0;
+	mini->in_fd = dup(STDIN_FILENO);
+	mini->out_fd = dup(STDOUT_FILENO);
+	
+	// Inicializa ambiente - IMPORTANTE: passar envp corretamente
+	init_env_list(mini, envp);
+	
+	// Configura sinais
+	setup_signals_interactive();
 }
 
-int main(void)
+// Função principal
+int	main(int argc, char **argv, char **envp)
 {
-    char *input;
-    t_minishell mini;
-    
-    // Inicializa AMBOS os garbage collectors
-    mini = (t_minishell){0};
-    mini.last_exit = 0;
-    mini.in_fd = STDIN_FILENO;
-    mini.out_fd = STDOUT_FILENO;
-    mini.gc_persistent = NULL;  // Para ambiente
-    mini.gc_temp = NULL;        // Para comandos temporários
-    
-    // Ambiente usa gc_persistent
-    init_env_list(&mini, __environ);
-    setup_signals_interactive();
-    
-    while (1)
-    {
-        input = readline("minishell> ");
-        
-        if (!input)
-        {
-            printf("exit\n");
-            break;
-        }
-        
-        if (g_signal_received == SIGINT)
-        {
-            mini.last_exit = 130;
-            g_signal_received = 0;
-        }
-        
-        if (*input)
-        {
-            add_history(input);
-            process_command_line(input, &mini);
-        }
-        
-        free(input);
-        
-        // MUDANÇA CRÍTICA: libera apenas dados temporários
-        gc_free_all(&mini.gc_temp);  // ← SÓ o temporário!
-        // mini.gc_persistent permanece intacto
-    }
-    
-    // Limpeza final: libera TUDO
-    cleanup_readline();
-    rl_clear_history();
-    gc_free_all(&mini.gc_temp);
-    gc_free_all(&mini.gc_persistent);
-    
-    return (mini.last_exit);
+	t_minishell	mini;
+	char		*input;
+	
+	(void)argc;
+	(void)argv;
+	
+	// Inicializa o minishell com o ambiente
+	init_minishell(&mini, envp);
+	
+	// Loop principal
+	while (1)
+	{
+		// Limpa garbage collector temporário
+		gc_cleanup(&mini.gc_temp);
+		
+		// Lê entrada do usuário
+		input = readline("minishell> ");
+		if (!input)
+		{
+			// EOF (Ctrl-D)
+			write(1, "exit\n", 5);
+			break ;
+		}
+		
+		// Ignora linhas vazias
+		if (*input == '\0')
+		{
+			free(input);
+			continue ;
+		}
+		
+		// Adiciona ao histórico
+		add_history(input);
+		
+		// Processa o comando
+		process_command_line(input, &mini);
+		
+		// Libera a entrada
+		free(input);
+		
+		// Verifica sinais
+		if (g_signal_received)
+		{
+			if (g_signal_received == SIGINT)
+				mini.last_exit = 130;
+			g_signal_received = 0;
+		}
+	}
+	
+	// Limpa tudo antes de sair
+	gc_cleanup(&mini.gc_persistent);
+	gc_cleanup(&mini.gc_temp);
+	
+	// Restaura file descriptors
+	dup2(mini.in_fd, STDIN_FILENO);
+	dup2(mini.out_fd, STDOUT_FILENO);
+	close(mini.in_fd);
+	close(mini.out_fd);
+	
+	return (mini.last_exit);
 }
-

@@ -143,6 +143,9 @@ bool	is_numeric_arg(char *str);
 char	is_space(char c);
 char	is_operator(char c);
 int		ft_atol(const char *nbr);
+void    ft_itoa_buf(int n, char *buf);
+void    ft_putnbr_fd(int n, int fd);
+void	update_shlvl(t_minishell *mini);
 char	*join_strings(char *s1, char *s2, t_garbage **gc);
 char	*append_char(char *str, char c, t_garbage **gc);
 
