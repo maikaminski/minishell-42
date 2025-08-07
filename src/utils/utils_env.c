@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 17:04:12 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 17:52:08 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/06 21:51:45 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,4 +111,13 @@ void	set_env_value(t_env **env, const char *key, const char *value, t_garbage **
 		if (new_node)
 			append_env_node(env, new_node);
 	}
+}
+char *get_env_value(t_env *env, const char *key)
+{
+    t_env *found;
+    
+    found = find_env_key(env, key);
+    if (!found)
+        return (NULL);
+    return (found->value);
 }
