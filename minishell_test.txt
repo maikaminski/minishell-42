@@ -1,0 +1,67 @@
+# 🌱 Comandos simples e vazios
+/bin/ls
+# (pressione apenas Enter)
+/bin/ls
+"     "
+
+# 📦 Argumentos
+/bin/ls -la /tmp
+echo hello world
+echo -n "sem nova linha"
+
+# 🚪 exit (reabra o minishell entre os testes)
+exit
+exit 42
+exit 1 2
+
+# ❓ Valor de retorno
+/bin/ls ; echo $?
+/bin/ls arquivo_inexistente ; echo $?
+expr $? + $?
+
+# 🔤 Aspas simples e duplas
+echo "cat lol.c | cat > lol.c"
+echo "Olá    mundo"
+echo '$USER'
+echo "$USER"
+
+# 🌎 Variáveis de ambiente
+export TESTE=abc
+echo $TESTE
+unset TESTE
+echo $TESTE
+
+# 📁 cd e pwd
+cd /tmp
+pwd
+cd ..
+pwd
+cd .
+pwd
+cd pasta_inexistente
+
+# 📄 env, export, unset
+env
+export NOVA=123
+env | grep NOVA
+unset NOVA
+env | grep NOVA
+
+# 📍 Relative path
+./minishell
+
+# 🚫 Sem PATH e PATH customizado
+unset PATH
+ls
+export PATH=/bin:/usr/bin
+ls
+
+# 🔁 Redirecionamentos
+echo "linha1" > teste.txt
+cat teste.txt
+echo "linha2" >> teste.txt
+cat < teste.txt
+cat << EOF
+abc
+def
+EOF

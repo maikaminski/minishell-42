@@ -8,5 +8,3 @@ minishell
 *.o
 *.d
 
-# Ignorar arquivos de texto
-*.txt
