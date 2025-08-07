@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:35:04 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 19:07:22 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/06 21:14:42 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	is_operator(char c)
 	return (c == '>' || c == '<' || c == '|');
 }
 
-char	*ft_strjoin_and_free(char *s1, char *s2, int free_s)
+/*char	*ft_strjoin_and_free(char *s1, char *s2, int free_s)
 {
 	char	*str;
 
@@ -36,7 +36,7 @@ char	*ft_strjoin_and_free(char *s1, char *s2, int free_s)
 	if (free_s & 2)
 		free(s2);
 	return (str);
-}
+}*/
 
 int	ft_atol(const char *nbr)
 {
