@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 10:43:37 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:10:55 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,24 +94,26 @@ char	*extract_var_name(char *str, int *pos, t_garbage **gc)
 	return (var_name);
 }
 
-char	*expand_variables(char *str, t_minishell *mini)
+char    *expand_variables(char *str, t_minishell *mini)
 {
-	char	*result;
-	int		i;
+    char    *result;
+    int     i;
 
-	if (!str)
-		return (NULL);
-	result = gc_malloc(1, &mini->gc_temp);
-	if (!result)
-		return (NULL);
-	result[0] = '\0';
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$')
-			result = process_dollar_sign(str, &i, result, mini);
-		else
-			result = append_char(result, str[i++], &mini->gc_temp);
-	}
-	return (result);
+    if (!str)
+        return (NULL);
+    result = gc_malloc(1, &mini->gc_temp);
+    if (!result)
+        return (NULL);
+    result[0] = '\0';
+	if (!str || str[0] == '\1') // Se começa com marcador, não expande
+        return (str);
+    i = 0;
+    while (str[i])
+    {
+        if (str[i] == '$' && !mini->current_token->single_quoted)
+            result = process_dollar_sign(str, &i, result, mini);
+        else
+            result = append_char(result, str[i++], &mini->gc_temp);
+    }
+    return (result);
 }

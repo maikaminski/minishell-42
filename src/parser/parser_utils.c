@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 14:34:21 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 14:00:51 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:53:23 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,18 @@ char	*extract_quoted_token(char *input, int *i, t_minishell *mini)
 }
 
 // Cria um novo token
-t_token	*create_token(char *value, t_tokens type, t_garbage **gc)
+t_token *create_token(char *value, t_tokens type, t_garbage **gc)
 {
-	t_token	*token;
+    t_token *token;
 
-	token = gc_malloc(sizeof(t_token), gc);
-	if (!token)
-		return (NULL);
-	token->value = value;
-	token->type = type;
-	token->next = NULL;
-	return (token);
+    token = gc_malloc(sizeof(t_token), gc);
+    if (!token)
+        return (NULL);
+    token->value = value;
+    token->type = type;
+    token->single_quoted = false; // Valor padrão
+    token->next = NULL;
+    return (token);
 }
 
 // Adiciona token à lista

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 14:41:40 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 17:56:50 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,10 +60,11 @@ typedef enum e_tokens
 
 typedef struct s_token
 {
-	t_tokens		type;
-	char			*value;
-	struct s_token	*next;
-}	t_token;
+    t_tokens      type;
+    char          *value;
+    bool          single_quoted; // Novo campo
+    struct s_token *next;
+} t_token;
 
 typedef struct s_redir
 {
@@ -95,6 +96,7 @@ typedef struct s_minishell
 	int			out_fd;
 	t_garbage	*gc_persistent;
 	t_garbage	*gc_temp;
+	t_token		*current_token;  // Novo campo para rastrear o token atual
 }	t_minishell;
 
 typedef struct s_exec_data

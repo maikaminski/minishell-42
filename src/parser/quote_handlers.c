@@ -6,16 +6,16 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:21:58 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 18:54:09 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:16:56 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*handle_single_quotes(char *input, int *i, t_minishell *mini)
+char    *handle_single_quotes(char *input, int *i, t_minishell *mini)
 {
-	int		start;
-	int		len;
+	int	start;
+	int	len;
 	char	*token;
 
 	(*i)++;
@@ -28,10 +28,11 @@ char	*handle_single_quotes(char *input, int *i, t_minishell *mini)
 		return (NULL);
 	}
 	len = *i - start;
-	token = gc_malloc(len + 1, &mini->gc_temp);
+	token = gc_malloc(len + 2, &mini->gc_temp);
 	if (!token)
 		return (NULL);
-	ft_strlcpy(token, &input[start], len + 1);
+	token[0] = '\1';
+	ft_strlcpy(token + 1, &input[start], len + 1);
 	(*i)++;
 	return (token);
 }

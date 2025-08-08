@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:53:15 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 14:05:44 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:02:37 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ static int	process_command_tokens(t_token **current,
 
 	while (*current && (*current)->type != T_PIPE)
 	{
+		mini->current_token = *current;  // Define o token atual
 		if ((*current)->type == T_WORD)
 		{
 			expanded = expand_variables((*current)->value, mini);
