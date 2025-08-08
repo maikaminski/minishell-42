@@ -6,12 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 19:12:14 by makamins          #+#    #+#             */
-/*   Updated: 2025/07/30 19:12:17 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 14:22:57 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GC_H
-# define GC_H
+#ifndef GARBAGE_COLLECTOR_H
+# define GARBAGE_COLLECTOR_H
 
 # include <stdlib.h>
 # include <stdio.h>

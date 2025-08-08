@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/06 19:14:43 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 10:43:37 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,29 +54,24 @@ char	*get_var_value(char *var_name, t_minishell *mini)
 
 	if (!var_name)
 		return (create_empty_string(&mini->gc_temp));
-	
 	if (ft_strncmp(var_name, "?", 2) == 0)
 	{
 		exit_str = ft_itoa(mini->last_exit);
 		if (!exit_str)
 			return (create_empty_string(&mini->gc_temp));
-		
 		value = gc_malloc(ft_strlen(exit_str) + 1, &mini->gc_temp);
 		if (!value)
 		{
 			free(exit_str);
 			return (create_empty_string(&mini->gc_temp));
 		}
-		
 		ft_strlcpy(value, exit_str, ft_strlen(exit_str) + 1);
 		free(exit_str);
 		return (value);
 	}
-	
 	value = get_env_value(mini->env, var_name);
 	if (!value)
 		return (create_empty_string(&mini->gc_temp));
-	
 	return (value);
 }
 
@@ -87,15 +82,6 @@ char	*extract_var_name(char *str, int *pos, t_garbage **gc)
 	char	*var_name;
 
 	start = *pos;
-	if (str[*pos] == '?')
-	{
-		(*pos)++;
-		var_name = gc_malloc(2, gc);
-		if (!var_name)
-			return (NULL);
-		ft_strlcpy(var_name, "?", 2);
-		return (var_name);
-	}
 	if (!(ft_isalpha(str[*pos]) || str[*pos] == '_'))
 		return (NULL);
 	while (str[*pos] && (ft_isalnum(str[*pos]) || str[*pos] == '_'))

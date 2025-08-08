@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 14:36:33 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/05 14:47:22 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 11:01:06 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 int	handle_input_redirection(t_redir *redir, t_minishell *mini)
 {
 	int		fd;
-	
+
 	fd = open(redir->file, O_RDONLY);
 	if (fd == -1)
 	{
@@ -38,7 +38,7 @@ int	handle_input_redirection(t_redir *redir, t_minishell *mini)
 int	setup_input_redirections(t_commands *cmd, t_minishell *mini)
 {
 	t_redir	*redir;
-	
+
 	redir = cmd->redir;
 	while (redir)
 	{

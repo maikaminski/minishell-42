@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:35:04 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 21:14:42 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 11:11:33 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,20 +23,6 @@ char	is_operator(char c)
 {
 	return (c == '>' || c == '<' || c == '|');
 }
-
-/*char	*ft_strjoin_and_free(char *s1, char *s2, int free_s)
-{
-	char	*str;
-
-	if (!s1 || !s2)
-		return (NULL);
-	str = ft_strjoin(s1, s2);
-	if (free_s & 1)
-		free(s1);
-	if (free_s & 2)
-		free(s2);
-	return (str);
-}*/
 
 int	ft_atol(const char *nbr)
 {
@@ -81,4 +67,11 @@ bool	is_numeric_arg(char *str)
 		i++;
 	}
 	return (true);
+}
+
+void	print_export_error(const char *arg)
+{
+	write(2, "export: `", 9);
+	write(2, arg, ft_strlen(arg));
+	write(2, "': not a valid identifier\n", 27);
 }

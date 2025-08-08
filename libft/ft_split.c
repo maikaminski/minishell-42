@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/04 20:55:45 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 13:12:59 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/07 19:26:45 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ static int	extract_words(char **result, const char *s, char c)
 		s += len;
 		if (*s == c)
 			s++;
-		}
+	}
 	result[i] = NULL;
 	return (1);
 }

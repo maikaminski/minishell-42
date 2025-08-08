@@ -1,42 +1,41 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils_export.c                                     :+:      :+:    :+:   */
+/*   token_parser2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/30 18:08:47 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/07 14:05:44 by makamins         ###   ########.fr       */
+/*   Created: 2025/08/08 14:03:26 by makamins          #+#    #+#             */
+/*   Updated: 2025/08/08 14:03:59 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
-bool	is_valid_id_export(const char *key)
+int	add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc)
 {
-	int	i;
+	int		count;
+	char	**new_argv;
+	int		i;
 
-	if (!key || key[0] == '\0')
-		return (false);
-	if (!(ft_isalpha(key[0]) || key[0] == '_'))
-		return (false);
-	i = 1;
-	while (key[i] && key[i] != '=')
+	count = 0;
+	if (cmd->argv)
 	{
-		if (!(ft_isalnum(key[i]) || key[i] == '_'))
-			return (false);
+		while (cmd->argv[count])
+		count++;
+	}
+	new_argv = gc_malloc(sizeof(char *) * (count + 2), gc);
+	if (!new_argv)
+		return (1);
+	i = 0;
+	while (i < count)
+	{
+		new_argv[i] = cmd->argv[i];
 		i++;
 	}
-	return (true);
-}
-
-void	print_env_line(t_env *node)
-{
-	if (!node || !node->key)
-		return ;
-	printf("declare -x %s", node->key);
-	if (node->value)
-		printf("=\"%s\"", node->value);
-	printf("\n");
+	new_argv[i] = arg;
+	new_argv[i + 1] = NULL;
+	cmd->argv = new_argv;
+	return (0);
 }

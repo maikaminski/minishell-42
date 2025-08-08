@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   command_builder.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:55:13 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/07/31 16:57:21 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/07 19:05:18 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ void	add_redir_to_command(t_commands *cmd, t_redir *new_redir)
 }
 
 // Adiciona um argumento ao vetor argv do comando
-int	add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc)
+int	_to_command(t_commands *cmd, char *arg, t_garbage **gc)
 {
 	char	**new_argv;
 	int		count;

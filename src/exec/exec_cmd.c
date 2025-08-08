@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 11:27:10 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/07 19:53:13 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,4 +57,27 @@ int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 		return (127);
 	}
 	return (fork_and_exec(cmd_path, args, env_array));
+}
+
+char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
+{
+	char	*full_path;
+	int		i;
+
+	if (!paths || !cmd || !gc)
+		return (NULL);
+	i = 0;
+	while (paths[i])
+	{
+		if (paths[i][0] == '\0')
+		{
+			i++;
+			continue ;
+		}
+		full_path = construct_path(paths[i], cmd, gc);
+		if (full_path && access(full_path, X_OK) == 0)
+			return (full_path);
+		i++;
+	}
+	return (NULL);
 }

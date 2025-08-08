@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:35:36 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 19:09:54 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 14:20:11 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,23 +63,19 @@ void	gc_free_all(t_garbage **gc)
 		free(temp);
 	}
 }
-void gc_free_temp_only(t_garbage **gc_temp, t_garbage **gc_persistent)
-{
-    t_garbage *temp;
-    
-    (void)gc_persistent;  // ← Adicionar esta linha
-    
-    if (!gc_temp)
-        return;
-    
-    // Libera apenas o garbage collector temporário
-    while (*gc_temp)
-    {
-        temp = *gc_temp;
-        free(temp->ptr);
-        *gc_temp = temp->next;
-        free(temp);
-    }
-    // gc_persistent permanece intacto
-}
 
+void	gc_free_temp_only(t_garbage **gc_temp, t_garbage **gc_persistent)
+{
+	t_garbage	*temp;
+
+	(void)gc_persistent;
+	if (!gc_temp)
+		return ;
+	while (*gc_temp)
+	{
+		temp = *gc_temp;
+		free(temp->ptr);
+		*gc_temp = temp->next;
+		free(temp);
+	}
+}

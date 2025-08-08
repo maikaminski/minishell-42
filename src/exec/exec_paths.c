@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:07:43 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 17:41:32 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/07 19:54:38 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,33 +30,30 @@ char	*construct_path(char *dir, char *cmd, t_garbage **gc)
 	return (full_path);
 }
 
-char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
+static int	process_path_entries(char **paths, t_garbage **gc)
 {
-	char	*full_path;
-	int		i;
+	int	i;
 
-	if (!paths || !cmd || !gc)
-		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
 		if (paths[i][0] == '\0')
 		{
-			i++;
-			continue ;
+			free(paths[i]);
+			paths[i] = ft_strdup(".");
+			if (!paths[i])
+				return (0);
 		}
-		full_path = construct_path(paths[i], cmd, gc);
-		if (full_path && access(full_path, X_OK) == 0)
-			return (full_path);
+		if (!gc_add_ptr(paths[i], gc))
+			return (0);
 		i++;
 	}
-	return (NULL);
+	return (1);
 }
 
 static char	**split_and_register_paths(char *path_value, t_garbage **gc)
 {
 	char	**paths;
-	int		i;
 
 	paths = ft_split(path_value, ':');
 	if (!paths)
@@ -66,20 +63,8 @@ static char	**split_and_register_paths(char *path_value, t_garbage **gc)
 		free_array(paths);
 		return (NULL);
 	}
-	i = 0;
-	while (paths[i])
-	{
-		if (paths[i][0] == '\0')
-		{
-			free(paths[i]);
-			paths[i] = ft_strdup(".");
-			if (!paths[i])
-				return (NULL);
-		}
-		if (!gc_add_ptr(paths[i], gc))
-			return (NULL);
-		i++;
-	}
+	if (!process_path_entries(paths, gc))
+		return (NULL);
 	return (paths);
 }
 
@@ -102,7 +87,6 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 
 	if (!cmd || !cmd[0] || !gc)
 		return (NULL);
-	// Se o comando tem '/' é um caminho absoluto ou relativo
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
@@ -115,7 +99,6 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 		}
 		return (NULL);
 	}
-	// Busca nos paths do sistema
 	paths = get_paths(env, gc);
 	if (!paths)
 		return (NULL);

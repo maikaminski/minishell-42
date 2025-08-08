@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 15:47:21 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 19:54:57 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 10:09:53 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@ char	*read_line_stdin(t_garbage **gc)
 	if (!line)
 		return (NULL);
 	line[0] = '\0';
-	while ((i = read(STDIN_FILENO, buff, 1)) > 0)
+	i = read(STDIN_FILENO, buff, 1);
+	while (i > 0)
 	{
 		if (buff[0] == '\n')
 			break ;
@@ -46,6 +47,7 @@ char	*read_line_stdin(t_garbage **gc)
 		if (!line)
 			return (NULL);
 		len++;
+		i = read(STDIN_FILENO, buff, 1);
 	}
 	if (i == -1)
 		return (NULL);
@@ -79,7 +81,7 @@ int	handle_heredoc(const char *delimiter, t_minishell *mini)
 		perror("pipe");
 		return (-1);
 	}
-	if (heredoc_loop(pipe_fd[1], delimiter, mini) == - 1)
+	if (heredoc_loop(pipe_fd[1], delimiter, mini) == -1)
 	{
 		close(pipe_fd[1]);
 		return (-1);

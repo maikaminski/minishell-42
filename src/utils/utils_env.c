@@ -3,28 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   utils_env.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 17:04:12 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/06 21:51:45 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/08 14:07:33 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
-
-t_env	*find_env_key(t_env *env, const char *key)
-{
-	if (!key)
-		return (NULL);
-	while (env)
-	{
-		if (env->key && ft_strncmp(env->key, key, ft_strlen(key) + 1) == 0)
-			return (env);
-		env = env->next;
-	}
-	return (NULL);
-}
 
 t_env	*create_env_node(const char *key, const char *value, t_garbage **gc)
 {
@@ -32,16 +19,13 @@ t_env	*create_env_node(const char *key, const char *value, t_garbage **gc)
 
 	if (!key || !gc)
 		return (NULL);
-	
 	node = gc_malloc(sizeof(t_env), gc);
 	if (!node)
 		return (NULL);
-	
 	node->key = gc_malloc(ft_strlen(key) + 1, gc);
 	if (!node->key)
 		return (NULL);
 	ft_strlcpy(node->key, key, ft_strlen(key) + 1);
-	
 	if (value)
 	{
 		node->value = gc_malloc(ft_strlen(value) + 1, gc);
@@ -51,7 +35,6 @@ t_env	*create_env_node(const char *key, const char *value, t_garbage **gc)
 	}
 	else
 		node->value = NULL;
-	
 	node->next = NULL;
 	return (node);
 }
@@ -60,7 +43,6 @@ void	update_env_value(t_env *found, const char *value, t_garbage **gc)
 {
 	if (!found || !gc)
 		return ;
-		
 	if (value)
 	{
 		found->value = gc_malloc(ft_strlen(value) + 1, gc);
@@ -77,47 +59,47 @@ void	append_env_node(t_env **env, t_env *new_node)
 
 	if (!env || !new_node)
 		return ;
-		
 	if (!*env)
 	{
 		*env = new_node;
 		return ;
 	}
-	
 	last = *env;
 	while (last->next)
 		last = last->next;
 	last->next = new_node;
 }
 
-void	set_env_value(t_env **env, const char *key, const char *value, t_garbage **gc)
+int	set_env_value(t_env **env, const char *key,
+	const char *value, t_garbage **gc)
 {
 	t_env	*found;
 	t_env	*new_node;
 
 	if (!env || !key || !gc)
-		return ;
-	
+		return (1);
 	found = find_env_key(*env, key);
 	if (found)
 	{
-		// Atualiza o valor da variável existente
 		update_env_value(found, value, gc);
+		return (0);
 	}
 	else
 	{
-		// Cria uma nova variável
 		new_node = create_env_node(key, value, gc);
-		if (new_node)
-			append_env_node(env, new_node);
+		if (!new_node)
+			return (1);
+		append_env_node(env, new_node);
+		return (0);
 	}
 }
-char *get_env_value(t_env *env, const char *key)
+
+char	*get_env_value(t_env *env, const char *key)
 {
-    t_env *found;
-    
-    found = find_env_key(env, key);
-    if (!found)
-        return (NULL);
-    return (found->value);
+	t_env	*found;
+
+	found = find_env_key(env, key);
+	if (!found)
+		return (NULL);
+	return (found->value);
 }

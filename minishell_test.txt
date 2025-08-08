@@ -65,3 +65,350 @@ cat << EOF
 abc
 def
 EOF
+
+echo -$USER-"$USER"-'$USER'-
+
+
+———————————— builtins
+Test   1: ✅ echo hello world 
+Test   2: ✅ echo "hello world" 
+Test   3: ✅ echo 'hello world' 
+Test   4: ❌ echo hello'world' 
+mini output = (hello world)
+bash output = (helloworld)
+Test   5: ❌ echo hello""world 
+mini output = (hello world)
+bash output = (helloworld)
+Test   6: ✅ echo '' 
+Test   7: ✅ echo "$PWD" 
+Test   8: ✅ echo '$PWD' 
+Test   9: ✅ echo "aspas ->'" 
+Test  10: ✅ echo "aspas -> ' " 
+Test  11: ✅ echo 'aspas ->"' 
+Test  12: ✅ echo 'aspas -> " ' 
+Test  13: ✅ echo "> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<" 
+Test  14: ✅ echo '> >> < * ? [ ] | ; [ ] || && ( ) & # $  <<' 
+Test  15: ✅ echo "exit_code ->$? user ->$USER home -> $HOME" 
+Test  16: ✅ echo 'exit_code ->$? user ->$USER home -> $HOME' 
+Test  17: ✅ echo "$" 
+Test  18: ✅ echo '$' 
+Test  19: ✅ echo $ 
+Test  20: ✅ echo $? 
+Test  21: ✅ echo $?HELLO 
+Test  22: ✅ pwd 
+Test  23: ✅ pwd oi 
+Test  24: ✅ export hello 
+Test  25: ❌ export HELLO=123 
+mini output = ( [DEBUG] arg recebido: 'HELLO=123' [DEBUG] índice do '=' (i): 5 [DEBUG] key extraída: 'HELLO')
+bash output = ()
+grep: (standard input): binary file matches
+Test  26: ✅⚠️  export A- 
+mini error = ()
+bash error = ( not a valid identifier)
+Test  27: ❌ export HELLO=123 A 
+mini output = ( [DEBUG] arg recebido: 'HELLO=123' [DEBUG] índice do '=' (i): 5 [DEBUG] key extraída: 'HELLO')
+bash output = ()
+grep: (standard input): binary file matches
+Test  28: ❌ export HELLO="123 A-" 
+mini output = ( [DEBUG] arg recebido: 'HELLO=' [DEBUG] índice do '=' (i): 5 [DEBUG] key extraída: 'HELLO')
+bash output = ()
+mini exit code = 1
+bash exit code = 0
+Test  29: ✅ export hello world 
+grep: (standard input): binary file matches
+Test  30: ❌ export HELLO-=123 
+mini output = ( [DEBUG] arg recebido: 'HELLO-=123' [DEBUG] índice do '=' (i): 6 [DEBUG] key extraída: 'HELLO-')
+bash output = ()
+mini error = ()
+bash error = ( not a valid identifier)
+grep: (standard input): binary file matches
+Test  31: ❌ export = 
+mini output = ( [DEBUG] arg recebido: '=' [DEBUG] índice do '=' (i): 0 [DEBUG] key extraída: '')
+bash output = ()
+mini error = ()
+bash error = ( not a valid identifier)
+grep: (standard input): binary file matches
+Test  32: ✅⚠️  export 123 
+mini error = ()
+bash error = ( not a valid identifier)
+Test  33: ✅ unset 
+Test  34: ✅ unset HELLO 
+Test  35: ✅ unset HELLO1 HELLO2 
+Test  36: ✅ unset HOME 
+Test  37: ✅ unset PATH 
+Test  38: ✅ unset SHELL 
+Test  39: ✅ cd $PWD 
+Test  40: ❌ cd $PWD hi 
+mini exit code = 0
+bash exit code = 1
+mini error = ()
+bash error = ( too many arguments)
+Test  41: ✅ cd 123123 
+Test  42: ✅⚠️  exit 123 
+mini error = (exit)
+bash error = ()
+Test  43: ✅⚠️  exit 298 
+mini error = (exit)
+bash error = ()
+Test  44: ✅⚠️  exit +100 
+mini error = (exit)
+bash error = ()
+Test  45: ✅⚠️  exit "+100" 
+mini error = (exit)
+bash error = ()
+Test  46: ❌ exit +"100" 
+mini exit code = 255
+bash exit code = 100
+mini error = (exit numeric argument required)
+bash error = ()
+Test  47: ✅⚠️  exit -100 
+mini error = (exit)
+bash error = ()
+Test  48: ✅⚠️  exit "-100" 
+mini error = (exit)
+bash error = ()
+Test  49: ❌ exit -"100" 
+mini exit code = 255
+bash exit code = 156
+mini error = (exit numeric argument required)
+bash error = ()
+Test  50: ❌ exit hello 
+mini exit code = 255
+bash exit code = 2
+mini error = (exit numeric argument required)
+bash error = ( numeric argument required)
+Test  51: ✅⚠️  exit 42 world 
+mini error = (exit too many arguments)
+bash error = ( too many arguments)
+Test  52: ✅  
+———————————— pipes
+Test  53: ✅ env | sort | grep -v SHLVL | grep -v ^_ 
+Test  54: ✅ cat ./test_files/infile_big | grep oi 
+Test  55: ❌ cat minishell.h | grep ");"$ 
+mini exit code = 0
+bash exit code = 1
+mini error = ( No such file or directory No such file or directory)
+bash error = ( No such file or directory)
+Test  56: ❌ export GHOST=123 | env | grep GHOST 
+mini exit code = 0
+bash exit code = 1
+———————————— redirects
+Test  57: ✅ grep hi <./test_files/infile 
+Test  58: ✅ grep hi "<infile" <         ./test_files/infile 
+Test  59: ✅ echo hi < ./test_files/infile bye bye 
+Test  60: ✅ grep hi <./test_files/infile_big <./test_files/infile 
+Test  61: ✅ echo <"./test_files/infile" "bonjour       42" 
+Test  62: ✅ cat <"./test_files/file name with spaces" 
+Test  63: ✅ cat <./test_files/infile_big ./test_files/infile 
+Test  64: ✅ cat <"1""2""3""4""5" 
+Test  65: ✅ echo <"./test_files/infile" <missing <"./test_files/infile" 
+Test  66: ✅ echo <missing <"./test_files/infile" <missing 
+Test  67: ✅ cat <"./test_files/infile" 
+Test  68: ✅ echo <"./test_files/infile_big" | cat <"./test_files/infile" 
+Test  69: ✅ echo <"./test_files/infile_big" | cat "./test_files/infile" 
+Test  70: ✅ echo <"./test_files/infile_big" | echo <"./test_files/infile" 
+Test  71: ✅ echo hi | cat <"./test_files/infile" 
+Test  72: ✅ echo hi | cat "./test_files/infile" 
+Test  73: ✅ cat <"./test_files/infile" | echo hi 
+Test  74: ✅ cat <"./test_files/infile" | grep hello 
+Test  75: ✅ cat <"./test_files/infile_big" | echo hi 
+Test  76: ✅ cat <missing 
+Test  77: ✅ cat <missing | cat 
+Test  78: ✅ cat <missing | echo oi 
+Test  79: ✅ cat <missing | cat <"./test_files/infile" 
+Test  80: ✅ echo <123 <456 hi | echo 42 
+Test  81: ✅ ls >./outfiles/outfile01 
+Test  82: ✅ ls >         ./outfiles/outfile01 
+Test  83: ✅ echo hi >         ./outfiles/outfile01 bye 
+Test  84: ✅ ls >./outfiles/outfile01 >./outfiles/outfile02 
+Test  85: ✅ ls >./outfiles/outfile01 >./test_files/invalid_permission 
+Test  86: ✅ ls >"./outfiles/outfile with spaces" 
+Test  87: ❌ ls >"./outfiles/outfile""1""2""3""4""5" 
+Only in ./mini_outfiles: outfile
+Only in ./bash_outfiles: outfile12345
+mini outfiles:
+bash outfiles:
+bash_outfiles
+bash.supp
+bonus
+bonus_bonus
+builtins
+extras
+local.supp
+loop.out
+manual_tests
+mini_outfiles
+os_specific
+outfiles
+pipes
+README.md
+redirects
+syntax
+tester
+test_files
+wildcards
+mini exit code = 2
+bash exit code = 0
+mini error = ( No such file or directory No such file or directory No such file or directory No such file or directory No such file or directory)
+bash error = ()
+Test  88: ✅ ls >"./outfiles/outfile01" >./test_files/invalid_permission >"./outfiles/outfile02" 
+Test  89: ✅ ls >./test_files/invalid_permission >"./outfiles/outfile01" >./test_files/invalid_permission 
+Test  90: ✅ cat <"./test_files/infile" >"./outfiles/outfile01" 
+Test  91: ✅ echo hi >./outfiles/outfile01 | echo bye 
+Test  92: ✅ echo hi >./outfiles/outfile01 >./outfiles/outfile02 | echo bye 
+Test  93: ✅ echo hi | echo >./outfiles/outfile01 bye 
+Test  94: ✅ echo hi | echo bye >./outfiles/outfile01 >./outfiles/outfile02 
+Test  95: ✅ echo hi >./outfiles/outfile01 | echo bye >./outfiles/outfile02 
+Test  96: ✅ echo hi >./outfiles/outfile01 >./test_files/invalid_permission | echo bye 
+Test  97: ✅ echo hi >./test_files/invalid_permission | echo bye 
+Test  98: ✅ echo hi >./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+Test  99: ❌ echo hi | echo bye >./test_files/invalid_permission 
+mini exit code = 0
+bash exit code = 1
+Test 100: ❌ echo hi | >./outfiles/outfile01 echo bye >./test_files/invalid_permission 
+mini exit code = 0
+bash exit code = 1
+Test 101: ❌ echo hi | echo bye >./test_files/invalid_permission >./outfiles/outfile01 
+mini exit code = 0
+bash exit code = 1
+Test 102: ✅ cat <"./test_files/infile" >./test_files/invalid_permission 
+Test 103: ✅ cat >./test_files/invalid_permission <"./test_files/infile" 
+Test 104: ✅ cat <missing >./outfiles/outfile01 
+Test 105: ✅ cat >./outfiles/outfile01 <missing 
+Test 106: ✅ cat <missing >./test_files/invalid_permission 
+Test 107: ✅ cat >./test_files/invalid_permission <missing 
+Test 108: ✅ cat >./outfiles/outfile01 <missing >./test_files/invalid_permission 
+Test 109: ✅ ls >>./outfiles/outfile01 
+Test 110: ✅ ls >>      ./outfiles/outfile01 
+Test 111: ✅ ls >>./outfiles/outfile01 >./outfiles/outfile01 
+Test 112: ✅ ls >./outfiles/outfile01 >>./outfiles/outfile01 
+Test 113: ✅ ls >./outfiles/outfile01 >>./outfiles/outfile01 >./outfiles/outfile02 
+Test 114: ✅ ls >>./outfiles/outfile01 >>./outfiles/outfile02 
+Test 115: ✅ ls >>./test_files/invalid_permission 
+Test 116: ✅ ls >>./test_files/invalid_permission >>./outfiles/outfile01 
+Test 117: ✅ ls >>./outfiles/outfile01 >>./test_files/invalid_permission 
+Test 118: ✅ ls >./outfiles/outfile01 >>./test_files/invalid_permission >>./outfiles/outfile02 
+Test 119: ✅ ls <missing >>./test_files/invalid_permission >>./outfiles/outfile02 
+Test 120: ✅ ls >>./test_files/invalid_permission >>./outfiles/outfile02 <missing 
+Test 121: ✅ echo hi >>./outfiles/outfile01 | echo bye 
+Test 122: ✅ echo hi >>./outfiles/outfile01 >>./outfiles/outfile02 | echo bye 
+Test 123: ✅ echo hi | echo >>./outfiles/outfile01 bye 
+Test 124: ✅ echo hi | echo bye >>./outfiles/outfile01 >>./outfiles/outfile02 
+Test 125: ✅ echo hi >>./outfiles/outfile01 | echo bye >>./outfiles/outfile02 
+Test 126: ✅ echo hi >>./test_files/invalid_permission | echo bye 
+Test 127: ✅ echo hi >>./test_files/invalid_permission >./outfiles/outfile01 | echo bye 
+Test 128: ❌ echo hi | echo bye >>./test_files/invalid_permission 
+mini exit code = 0
+bash exit code = 1
+Test 129: ❌ echo hi | echo >>./outfiles/outfile01 bye >./test_files/invalid_permission 
+mini exit code = 0
+bash exit code = 1
+Test 130: ✅ cat <minishell.h>./outfiles/outfile 
+Test 131: ✅ cat <minishell.h|ls 
+———————————— extras
+Test 132: ✅  
+Test 133: ✅⚠️  $PWD 
+mini error = ( Permission denied)
+bash error = ( Is a directory)
+Test 134: ❌ $EMPTY 
+mini exit code = 127
+bash exit code = 0
+mini error = ( command not found)
+bash error = ()
+Test 135: ❌ $EMPTY echo hi 
+mini output = ()
+bash output = (hi)
+mini exit code = 127
+bash exit code = 0
+mini error = ( command not found)
+bash error = ()
+Test 136: ❌ ./test_files/invalid_permission 
+mini exit code = 127
+bash exit code = 126
+mini error = ( command not found)
+bash error = ( Permission denied)
+Test 137: ✅⚠️  ./missing.out 
+mini error = ( command not found)
+bash error = ( No such file or directory)
+Test 138: ✅ missing.out 
+Test 139: ✅ "aaa" 
+Test 140: ✅ test_files 
+Test 141: ✅⚠️  ./test_files 
+mini error = ( Permission denied)
+bash error = ( Is a directory)
+Test 142: ✅⚠️  /test_files 
+mini error = ( command not found)
+bash error = ( No such file or directory)
+Test 143: ✅ minishell.h 
+Test 144: ✅ $ 
+Test 145: ✅ $? 
+Test 146: ✅ README.md 
+
+// // Função auxiliar para debug - imprime a estrutura de comandos
+// void	print_command_structure(t_commands *cmd_list)
+// {
+// 	t_commands	*cmd;
+// 	t_redir		*redir;
+// 	int			cmd_num;
+// 	int			arg_num;
+
+// 	cmd_num = 1;
+// 	cmd = cmd_list;
+	
+// 	printf("\n=== Command Structure ===\n");
+	
+// 	while (cmd)
+// 	{
+// 		printf("Command %d:\n", cmd_num);
+		
+// 		// Imprime argumentos
+// 		if (cmd->argv)
+// 		{
+// 			printf("  Arguments:\n");
+// 			arg_num = 0;
+// 			while (cmd->argv[arg_num])
+// 			{
+// 				printf("    [%d] %s\n", arg_num, cmd->argv[arg_num]);
+// 				arg_num++;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			printf("  No arguments\n");
+// 		}
+		
+// 		// Imprime redirecionamentos
+// 		if (cmd->redir)
+// 		{
+// 			printf("  Redirections:\n");
+// 			redir = cmd->redir;
+// 			while (redir)
+// 			{
+// 				printf("    Type: ");
+// 				if (redir->type == REDIR_IN)
+// 					printf("< (input)");
+// 				else if (redir->type == REDIR_OUT)
+// 					printf("> (output)");
+// 				else if (redir->type == REDIR_APPEND)
+// 					printf(">> (append)");
+// 				else if (redir->type == REDIR_HEREDOC)
+// 					printf("<< (heredoc)");
+// 				printf(", File: %s\n", redir->file);
+// 				redir = redir->next;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			printf("  No redirections\n");
+// 		}
+		
+// 		// Indica se há mais comandos (pipe)
+// 		if (cmd->next)
+// 			printf("  | (pipe to next command)\n");
+			
+// 		cmd = cmd->next;
+// 		cmd_num++;
+// 	}
+	
+// 	printf("=== End of Structure ===\n\n");
+// }
