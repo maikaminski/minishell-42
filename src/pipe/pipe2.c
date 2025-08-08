@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:30:58 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 11:00:13 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:33:36 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,9 @@ void	wait_all_children(int n)
 int	execute_pipeline(t_commands *cmd_list, t_minishell *mini)
 {
 	t_exec_data	data;
+	int			status;
 	int			last_status;
+	int			i;
 
 	setup_initial_vars(&data, cmd_list);
 	while (data.cmd)
@@ -49,10 +51,11 @@ int	execute_pipeline(t_commands *cmd_list, t_minishell *mini)
 		if (exec_single_command(&data, mini) == 1)
 			return (1);
 	}
-	while (data.num_cmds > 1)
+	i = data.num_cmds - 1;
+	while (i > 0)
 	{
-		wait(NULL);
-		data.num_cmds--;
+		waitpid(-1, &status, 0);
+		i--;
 	}
 	last_status = 0;
 	if (waitpid(data.last_pid, &last_status, 0) == -1)

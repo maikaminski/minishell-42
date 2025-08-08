@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:24:57 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/07 19:37:37 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 19:00:19 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ int	ft_exit(char **argv, t_minishell *mini)
 	if (!is_valid_exit_arg(argv[1]))
 	{
 		write(2, "exit: numeric argument required\n", 32);
-		exit(255);
+		exit(2);
 	}
 	if (argv[2])
 	{

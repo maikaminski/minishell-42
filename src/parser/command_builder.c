@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:55:13 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/07 19:05:18 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:32:42 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,33 +56,6 @@ void	add_redir_to_command(t_commands *cmd, t_redir *new_redir)
 	while (last->next)
 		last = last->next;
 	last->next = new_redir;
-}
-
-// Adiciona um argumento ao vetor argv do comando
-int	_to_command(t_commands *cmd, char *arg, t_garbage **gc)
-{
-	char	**new_argv;
-	int		count;
-	int		i;
-
-	if (!cmd || !arg)
-		return (1);
-	count = 0;
-	while (cmd->argv && cmd->argv[count])
-		count++;
-	new_argv = gc_malloc(sizeof(char *) * (count + 2), gc);
-	if (!new_argv)
-		return (1);
-	i = 0;
-	while (i < count)
-	{
-		new_argv[i] = cmd->argv[i];
-		i++;
-	}
-	new_argv[i] = arg;
-	new_argv[i + 1] = NULL;
-	cmd->argv = new_argv;
-	return (0);
 }
 
 // Adiciona um comando ao final da lista de comandos

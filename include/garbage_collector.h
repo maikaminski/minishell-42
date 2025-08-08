@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 19:12:14 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 14:22:57 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:33:50 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ typedef struct s_garbage
 void	*gc_malloc(size_t size, t_garbage **gc);
 int		gc_add_ptr(void *ptr, t_garbage **gc);
 void	gc_free_all(t_garbage **gc);
+void	gc_free_temp_only(t_garbage **gc_temp, t_garbage **gc_persistent);
 
 #endif

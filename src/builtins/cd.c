@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:39:05 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/07 19:32:19 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 18:58:23 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,19 +54,36 @@ static void	update_pwd_vars(t_minishell *mini,
 	set_env_value(&mini->env, "PWD", newpwd, &mini->gc_persistent);
 }
 
+static int	prepare_cd_operation(char **argv, t_minishell *mini, char **oldpwd)
+{
+	int	argc;
+
+	argc = 0;
+	while (argv[argc])
+		argc++;
+	if (argc > 2)
+	{
+		write(2, "minishell: cd: too many arguments\n", 34);
+		return (-1);
+	}
+	*oldpwd = getcwd(NULL, 0);
+	if (!*oldpwd)
+	{
+		perror("cd");
+		return (-1);
+	}
+	gc_add_ptr(*oldpwd, &mini->gc_temp);
+	return (0);
+}
+
 int	ft_cd(char **argv, t_minishell *mini)
 {
 	char	*oldpwd;
 	char	*target;
 	char	*newpwd;
 
-	oldpwd = getcwd(NULL, 0);
-	if (!oldpwd)
-	{
-		perror("cd");
+	if (prepare_cd_operation(argv, mini, &oldpwd) == -1)
 		return (1);
-	}
-	gc_add_ptr(oldpwd, &mini->gc_temp);
 	target = get_target_path(argv, mini);
 	if (!target)
 		return (1);

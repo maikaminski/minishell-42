@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 12:50:13 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:33:04 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,12 +78,13 @@ void	child_procces_logic(t_commands *cmd,
 {
 	char	**envp;
 	char	*cmd_path;
+	int		status;
 
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
 	if (is_builtin_cmd(cmd->argv[0]))
 	{
-		execute_builtin(cmd, mini);
-		exit(mini->last_exit);
+		status = execute_builtin(cmd, mini);
+		exit(status);
 	}
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
@@ -118,8 +119,7 @@ int	exec_single_command(t_exec_data *data, t_minishell *mini)
 	{
 		parent_procces_logic(&data->prev_read_fd,
 			data->pipe_fd, data->cmd);
-		if (data->cmd == NULL)
-			data->last_pid = data->pid;
+		data->last_pid = data->pid;
 		data->cmd = data->cmd->next;
 		data->i++;
 	}
