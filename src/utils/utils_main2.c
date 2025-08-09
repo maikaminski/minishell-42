@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:54:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 13:56:38 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:51:58 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,15 @@ void	execute_external_command(t_commands *cmd, t_minishell *mini)
 	pid_t	pid;
 	int		status;
 
+	// Ignora sinais no pai durante execução do filho
+	setup_signals_ignore();
+	
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("fork");
 		mini->last_exit = 1;
+		setup_signals_interactive(); // Restaura sinais
 		return ;
 	}
 	else if (pid == 0)
@@ -36,6 +40,9 @@ void	execute_external_command(t_commands *cmd, t_minishell *mini)
 		}
 		else
 			handle_child_exit_status(status, mini);
+		
+		// Restaura sinais interativos após processo filho terminar
+		setup_signals_interactive();
 	}
 }
 

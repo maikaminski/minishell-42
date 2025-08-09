@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 13:57:37 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 20:55:46 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	char	**envp;
 	char	*cmd_path;
 
+	setup_signals_child();
+
 	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
@@ -79,5 +81,15 @@ void	handle_child_exit_status(int status, t_minishell *mini)
 	if (WIFEXITED(status))
 		mini->last_exit = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
-		mini->last_exit = 128 + WTERMSIG(status);
+	{
+		int sig = WTERMSIG(status);
+		
+		// Adiciona quebra de linha para sinais que interrompem o processo
+		if (sig == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
+		else if (sig == SIGQUIT)
+			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+		
+		mini->last_exit = 128 + sig;
+	}
 }

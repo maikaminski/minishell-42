@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 13:58:48 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 21:02:57 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,12 +64,12 @@ static int	process_input(t_minishell *mini)
 	add_history(input);
 	process_command_line(input, mini);
 	free(input);
-	if (g_signal_received)
+	/*if (g_signal_received)
 	{
 		if (g_signal_received == SIGINT)
 			mini->last_exit = 130;
 		g_signal_received = 0;
-	}
+	}*/
 	return (1);
 }
 
