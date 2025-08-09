@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 14:34:21 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 14:00:51 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/08 23:00:24 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,11 +92,39 @@ t_tokens	get_operator_type(char *input, int pos)
 	return (T_WORD);
 }
 
+static int	is_invalid_operator(char *input, int pos)
+{
+	// Detecta && e || como operadores inválidos
+	if (input[pos] == '&' && input[pos + 1] == '&')
+		return (1);
+	if (input[pos] == '|' && input[pos + 1] == '|')
+		return (1);
+	if (input[pos] == ';')
+		return (1);
+	if (input[pos] == '\\')
+		return (1);
+	return (0);
+}
+
 void	process_operator_token(char *input, int *i,
 		t_token **tokens, t_garbage **gc)
 {
 	t_tokens	type;
 	t_token		*new_token;
+
+	// CORRIGIDO: avança o ponteiro e sai da função
+	if (is_invalid_operator(input, *i))
+	{
+		write(2, "minishell: syntax error near unexpected token\n", 47);
+		// IMPORTANTE: avançar o ponteiro para evitar loop infinito
+		if (input[*i] == '&' && input[*i + 1] == '&')
+			*i += 2;
+		else if (input[*i] == '|' && input[*i + 1] == '|')
+			*i += 2;
+		else
+			(*i)++;
+		return ;
+	}
 
 	type = get_operator_type(input, *i);
 	if ((input[*i] == '>' || input[*i] == '<') && input[*i + 1] == input[*i])
