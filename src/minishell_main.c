@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 21:02:57 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/09 03:14:29 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,15 +20,19 @@ static void	process_command_line(char *input, t_minishell *mini)
 	t_token		*tokens;
 	t_commands	*cmd_list;
 
+	if (validate_input_syntax(input))
+	{
+		mini->last_exit = 2;
+		return ;
+	}
 	tokens = tokenize(input, mini);
 	if (!tokens)
 		return ;
 	cmd_list = parse_tokens_to_commands(tokens, &mini->gc_temp, mini);
 	if (!cmd_list)
 		return ;
-	mini->commands = cmd_list;
 	if (cmd_list->next)
-		mini->last_exit = execute_pipeline(cmd_list, mini);
+		execute_pipeline(cmd_list, mini);
 	else
 		execute_simple_command(cmd_list, mini);
 }

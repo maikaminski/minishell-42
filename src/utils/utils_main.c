@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 20:55:46 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/09 04:40:38 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,10 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	if (!cmd_path)
 	{
 		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-		write(2, ": command not found\n", 20);
+		if (has_slash(cmd->argv[0]))
+			write(2, ": No such file or directory\n", 29);
+		else
+			write(2, ": command not found\n", 20);
 		exit(127);
 	}
 	execve(cmd_path, cmd->argv, envp);

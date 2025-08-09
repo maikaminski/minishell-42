@@ -1,9 +1,0 @@
-{
-	"makefile.launchConfigurations": [
-		{
-			"cwd": "/nfs/homes/makamins/minishell",
-			"binaryPath": "/nfs/homes/makamins/minishell/minishell",
-			"binaryArgs": []
-		}
-	]
-}

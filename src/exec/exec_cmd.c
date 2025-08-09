@@ -6,12 +6,35 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 22:04:46 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/09 04:39:42 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
+
+int	has_slash(char *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd[i])
+	{
+		if (cmd[i] == '/')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static void	print_exec_error(char *cmd)
+{
+	write(2, cmd, ft_strlen(cmd));
+	if (has_slash(cmd))
+		write(2, ": No such file or directory\n", 29);
+	else
+		write(2, ": command not found\n", 20);
+}
 
 int	fork_and_exec(char *cmd_path, char **args, char **envp)
 {
@@ -28,7 +51,7 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 	{
 		execve(cmd_path, args, envp);
 		perror("execve");
-		exit (1);
+		exit(1);
 	}
 	if (waitpid(pid, &status, 0) == -1)
 	{
@@ -53,7 +76,7 @@ int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 	cmd_path = get_cmd_path(args[0], env, gc);
 	if (!cmd_path)
 	{
-		printf("%s: command not found\n", args[0]);
+		print_exec_error(args[0]);
 		return (127);
 	}
 	return (fork_and_exec(cmd_path, args, env_array));
@@ -64,16 +87,9 @@ char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
 	char	*full_path;
 	int		i;
 
-	if (!paths || !cmd || !gc)
-		return (NULL);
 	i = 0;
 	while (paths[i])
 	{
-		if (paths[i][0] == '\0')
-		{
-			i++;
-			continue ;
-		}
 		full_path = construct_path(paths[i], cmd, gc);
 		if (full_path && access(full_path, X_OK) == 0)
 			return (full_path);

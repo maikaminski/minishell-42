@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 14:41:40 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/09 04:20:17 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,8 +119,17 @@ void		setup_signals_interactive(void);
 void		setup_signals_child(void);
 void		setup_signals_ignore(void);
 
-/* Parser Principal */
+/* Parser validation */
+int			validate_input_syntax(char *input);
+
+/* Parser functions */
 t_token		*tokenize(char *input, t_minishell *mini);
+void		process_operator_token(char *input, int *i, t_token **tokens, t_garbage **gc);
+t_tokens	get_operator_type(char *input, int pos);
+t_token		*create_token(char *value, t_tokens type, t_garbage **gc);
+void		add_token_to_list(t_token **list, t_token *new_token);
+
+/* Parser Principal */
 t_commands	*parse_tokens_to_commands(t_token *tokens,
 			t_garbage **gc, t_minishell *mini);
 
@@ -175,6 +184,7 @@ char		is_operator(char c);
 int			ft_atol(const char *nbr);
 void    	ft_itoa_buf(int n, char *buf);
 void    	ft_putnbr_fd(int n, int fd);
+int			has_slash(char *cmd);
 void		update_shlvl(t_minishell *mini);
 char		*join_strings(char *s1, char *s2, t_garbage **gc);
 char		*append_char(char *str, char c, t_garbage **gc);

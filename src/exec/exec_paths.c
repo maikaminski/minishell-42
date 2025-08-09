@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_paths.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:07:43 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/07 19:54:38 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/09 04:28:19 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,16 +85,15 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 	char	**paths;
 	char	*cmd_path;
 
-	if (!cmd || !cmd[0] || !gc)
+	if (!cmd || !cmd[0])
 		return (NULL);
-	if (ft_strchr(cmd, '/'))
+	if (has_slash(cmd))
 	{
 		if (access(cmd, X_OK) == 0)
 		{
-			cmd_path = gc_malloc(ft_strlen(cmd) + 1, gc);
-			if (!cmd_path)
+			cmd_path = ft_strdup(cmd);
+			if (!cmd_path || !gc_add_ptr(cmd_path, gc))
 				return (NULL);
-			ft_strlcpy(cmd_path, cmd, ft_strlen(cmd) + 1);
 			return (cmd_path);
 		}
 		return (NULL);
@@ -102,5 +101,8 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 	paths = get_paths(env, gc);
 	if (!paths)
 		return (NULL);
-	return (find_cmd_in_paths(paths, cmd, gc));
+	cmd_path = find_cmd_in_paths(paths, cmd, gc);
+	if (cmd_path && !gc_add_ptr(cmd_path, gc))
+		return (NULL);
+	return (cmd_path);
 }

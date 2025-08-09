@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 22:03:15 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/09 04:40:11 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,11 @@ void	child_procces_logic(t_commands *cmd,
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
 	{
-		printf("%s: command not found\n", cmd->argv[0]);
+		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
+		if (has_slash(cmd->argv[0]))
+			write(2, ": No such file or directory\n", 29);
+		else
+			write(2, ": command not found\n", 20);
 		exit(127);
 	}
 	execve(cmd_path, cmd->argv, envp);

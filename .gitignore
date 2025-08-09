@@ -8,3 +8,5 @@ minishell
 *.o
 *.d
 
+*.vscode/settings.json
+*.txt
