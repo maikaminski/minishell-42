@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:54:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:15:21 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:47:12 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,25 +18,21 @@ void	execute_external_command(t_commands *cmd, t_minishell *mini)
 	pid_t	pid;
 	int		status;
 
-	// Ignora sinais no pai durante execução do filho
 	setup_signals_ignore();
-	
 	pid = fork();
 	if (pid < 0)
 	{
 		perror("fork");
 		mini->last_exit = 1;
-		setup_signals_interactive(); // Restaura sinais
+		setup_signals_interactive();
 		return ;
 	}
 	else if (pid == 0)
 	{
-		// Processo filho - configura sinais para comportamento padrão
 		child_process_exec(cmd, mini);
 	}
 	else
 	{
-		// Processo pai - espera pelo filho
 		if (waitpid(pid, &status, 0) == -1)
 		{
 			if (errno != ECHILD && errno != EINTR)
@@ -45,8 +41,6 @@ void	execute_external_command(t_commands *cmd, t_minishell *mini)
 		}
 		else
 			handle_child_exit_status(status, mini);
-		
-		// Restaura sinais interativos após processo filho terminar
 		setup_signals_interactive();
 	}
 }
