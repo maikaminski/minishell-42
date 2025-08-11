@@ -6,54 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 17:42:37 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:39:12 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
-
-// Verifica se o comando é um builtin
-int	is_builtin_cmd(char *cmd)
-{
-	if (!cmd)
-		return (0);
-	if (ft_strncmp(cmd, "echo", 5) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "cd", 3) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "pwd", 4) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "export", 7) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "unset", 6) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "env", 4) == 0)
-		return (1);
-	if (ft_strncmp(cmd, "exit", 5) == 0)
-		return (1);
-	return (0);
-}
-
-// Executa builtin no processo filho
-int	execute_builtin(t_commands *cmd, t_minishell *mini)
-{
-	if (ft_strncmp(cmd->argv[0], "echo", 5) == 0)
-		return (ft_echo(cmd->argv, mini));
-	else if (ft_strncmp(cmd->argv[0], "cd", 3) == 0)
-		return (ft_cd(cmd->argv, mini));
-	else if (ft_strncmp(cmd->argv[0], "pwd", 4) == 0)
-		return (ft_pwd(mini));
-	else if (ft_strncmp(cmd->argv[0], "export", 7) == 0)
-		return (ft_export(cmd->argv, mini));
-	else if (ft_strncmp(cmd->argv[0], "unset", 6) == 0)
-		return (ft_unset(cmd->argv, mini));
-	else if (ft_strncmp(cmd->argv[0], "env", 4) == 0)
-		return (ft_env(mini));
-	else if (ft_strncmp(cmd->argv[0], "exit", 5) == 0)
-		return (ft_exit(cmd->argv, mini));
-	return (0);
-}
 
 static void	setup_pipes_and_redirections(t_commands *cmd,
 	int prev_read_fd, int pipe_fd[2], t_minishell *mini)
@@ -72,46 +30,71 @@ static void	setup_pipes_and_redirections(t_commands *cmd,
 	if (handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
 }
-bool is_str_empty_or_whitespace(const char *str)
-{
-    int i = 0;
-    if (!str) // Se for NULL, já é vazio, sacou?
-        return true;
-    
-    while (str[i]) // Enquanto não chegar no final da string
-    {
-        // Se achar qualquer caractere que não seja espaço, tab ou newline, já sai dizendo que não é vazio
-        if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
-            return false;
-        i++;
-    }
-    // Se passou o loop todo, é porque só tinha espaços em branco, então é vazio
-    return true;
-}
-void expand_cmd_args(t_commands *cmd, t_minishell *mini)
-{
-    int i = 0;
-    char *expanded;
 
-    while (cmd->argv[i])
-    {
-        expanded = expand_variables(cmd->argv[i], mini);
-        if (!expanded)
-            expanded = ft_strdup("");  // fallback seguro
+bool	is_str_empty_or_whitespace(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (true);
+	while (str[i])
+	{
+		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+			return (false);
+		i++;
+	}
+	return (true);
+}
+
+void	expand_cmd_args(t_commands *cmd, t_minishell *mini)
+{
+	int		i;
+	char	*expanded;
+
+	i = 0;
+	while (cmd->argv[i])
+	{
+		expanded = expand_variables(cmd->argv[i], mini);
+		if (!expanded)
+			expanded = ft_strdup("");
 		else
 			gc_add_ptr(expanded, &mini->gc_temp);
-        cmd->argv[i] = expanded;
-        i++;
-    }
+		cmd->argv[i] = expanded;
+		i++;
+	}
 }
 
+static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
+{
+	char	**envp;
+	char	*cmd_path;
+
+	envp = env_list_to_array(mini->env, &mini->gc_temp);
+	if (!envp)
+		exit(1);
+	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
+	if (!cmd_path)
+	{
+		if (cmd->argv[0] && !is_str_empty_or_whitespace(cmd->argv[0]))
+		{
+			write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
+			if (has_slash(cmd->argv[0]))
+				write(2, ": No such file or directory\n", 29);
+			else
+				write(2, ": command not found\n", 20);
+		}
+		exit(127);
+	}
+	execve(cmd_path, cmd->argv, envp);
+	perror(cmd->argv[0]);
+	exit(127);
+}
 
 void	child_procces_logic(t_commands *cmd,
 	int prev_read_fd, int pipe_fd[2], t_minishell *mini)
 {
-	char	**envp;
-	char	*cmd_path;
-	int		status;
+	int	status;
 
 	expand_cmd_args(cmd, mini);
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
@@ -122,49 +105,5 @@ void	child_procces_logic(t_commands *cmd,
 		status = execute_builtin(cmd, mini);
 		exit(status);
 	}
-	envp = env_list_to_array(mini->env, &mini->gc_temp);
-	if (!envp)
-		exit(1);
-	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
-	if (!cmd_path)
-{
-    if (cmd->argv[0] && !is_str_empty_or_whitespace(cmd->argv[0]))
-    {
-        write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-        if (has_slash(cmd->argv[0]))
-            write(2, ": No such file or directory\n", 29);
-        else
-            write(2, ": command not found\n", 20);
-    }
-    exit(127);
-}
-	execve(cmd_path, cmd->argv, envp);
-	perror(cmd->argv[0]);
-	exit(127);
-}
-
-int	exec_single_command(t_exec_data *data, t_minishell *mini)
-{
-	if (create_pipe_if_needed(data->cmd, data->pipe_fd) == -1)
-		return (1);
-	data->pid = fork();
-	if (data->pid < 0)
-	{
-		perror("fork");
-		return (1);
-	}
-	else if (data->pid == 0)
-	{
-		child_procces_logic(data->cmd, data->prev_read_fd,
-			data->pipe_fd, mini);
-	}
-	else
-	{
-		parent_procces_logic(&data->prev_read_fd,
-			data->pipe_fd, data->cmd);
-		data->last_pid = data->pid;
-		data->cmd = data->cmd->next;
-		data->i++;
-	}
-	return (0);
+	execute_external_cmd(cmd, mini);
 }
