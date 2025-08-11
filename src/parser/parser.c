@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 20:04:28 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 14:06:52 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:09:10 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,19 +45,17 @@ static char	*collect_word_token(char *input, int *i, int len, t_minishell *mini)
 	char	*part;
 	char	*joined;
 
-	result = ft_strdup("");
+	result = create_empty_string(&mini->gc_temp);
 	if (!result)
 		return (NULL);
-	gc_add_ptr(result, &mini->gc_temp);
 	while (*i < len && !is_space(input[*i]) && !is_operator(input[*i]))
 	{
 		part = extract_word_part(input, i, len, mini);
 		if (!part)
 			return (NULL);
-		joined = ft_strjoin(result, part);
+		joined = join_strings(result, part, &mini->gc_temp);
 		if (!joined)
 			return (NULL);
-		gc_add_ptr(joined, &mini->gc_temp);
 		result = joined;
 	}
 	return (result);

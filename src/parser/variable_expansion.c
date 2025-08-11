@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 18:31:29 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 15:28:01 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ char	*extract_raw_content(char *input, int start, int len, t_garbage **gc)
 	return (content);
 }
 
-static char	*create_empty_string(t_garbage **gc)
+char	*create_empty_string(t_garbage **gc)
 {
 	char	*str;
 
@@ -59,15 +59,8 @@ char	*get_var_value(char *var_name, t_minishell *mini)
 		exit_str = ft_itoa(mini->last_exit);
 		if (!exit_str)
 			return (create_empty_string(&mini->gc_temp));
-		value = gc_malloc(ft_strlen(exit_str) + 1, &mini->gc_temp);
-		if (!value)
-		{
-			free(exit_str);
-			return (create_empty_string(&mini->gc_temp));
-		}
-		ft_strlcpy(value, exit_str, ft_strlen(exit_str) + 1);
-		free(exit_str);
-		return (value);
+		gc_add_ptr(exit_str, &mini->gc_temp);
+		return (exit_str);
 	}
 	value = get_env_value(mini->env, var_name);
 	if (!value)
@@ -101,12 +94,11 @@ char	*expand_variables(char *str, t_minishell *mini)
 
 	if (!str)
 		return (NULL);
-	result = gc_malloc(1, &mini->gc_temp);
+	if (str[0] == '\1')
+		return (str);
+	result = create_empty_string(&mini->gc_temp);
 	if (!result)
 		return (NULL);
-	if (!str || str[0] == '\1')
-		return (str);
-	result[0] = '\0';
 	i = 0;
 	while (str[i])
 	{

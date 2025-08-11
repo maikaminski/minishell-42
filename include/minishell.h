@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/09 04:20:17 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 16:01:30 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ typedef struct s_minishell
 	int			last_exit;
 	int			in_fd;
 	int			out_fd;
+	int should_exit; 
 	t_garbage	*gc_persistent;
 	t_garbage	*gc_temp;
 }	t_minishell;
@@ -188,6 +189,7 @@ int			has_slash(char *cmd);
 void		update_shlvl(t_minishell *mini);
 char		*join_strings(char *s1, char *s2, t_garbage **gc);
 char		*append_char(char *str, char c, t_garbage **gc);
+char	*create_empty_string(t_garbage **gc);
 
 /* Ambiente */
 void		init_env_list(t_minishell *mini, char **envp);

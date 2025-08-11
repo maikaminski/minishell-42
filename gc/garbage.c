@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:35:36 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 14:20:11 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 16:36:58 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,8 +52,9 @@ int	gc_add_ptr(void *ptr, t_garbage **gc)
 void	gc_free_all(t_garbage **gc)
 {
 	t_garbage	*temp;
+	int count = 0;
 
-	if (!gc)
+	if (!gc || !*gc)
 		return ;
 	while (*gc)
 	{
@@ -61,6 +62,7 @@ void	gc_free_all(t_garbage **gc)
 		free(temp->ptr);
 		*gc = temp->next;
 		free(temp);
+		count++;
 	}
 }
 

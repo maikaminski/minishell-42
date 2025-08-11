@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/09 03:14:29 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 16:11:18 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static void	process_command_line(char *input, t_minishell *mini)
 		execute_pipeline(cmd_list, mini);
 	else
 		execute_simple_command(cmd_list, mini);
+	gc_free_all(&mini->gc_temp);
 }
 
 static void	init_minishell(t_minishell *mini, char **envp)
@@ -44,6 +45,7 @@ static void	init_minishell(t_minishell *mini, char **envp)
 	mini->commands = NULL;
 	mini->env = NULL;
 	mini->last_exit = 0;
+	mini->should_exit = 0; 
 	mini->in_fd = dup(STDIN_FILENO);
 	mini->out_fd = dup(STDOUT_FILENO);
 	init_env_list(mini, envp);
@@ -74,6 +76,8 @@ static int	process_input(t_minishell *mini)
 			mini->last_exit = 130;
 		g_signal_received = 0;
 	}*/
+ 	if (mini->should_exit)
+        return (0);
 	return (1);
 }
 
@@ -81,9 +85,11 @@ static void	run_minishell(t_minishell *mini)
 {
 	while (1)
 	{
-		gc_free_all(&mini->gc_temp);
 		if (!process_input(mini))
 			break ;
+		if (mini->should_exit)  // Verificar flag
+            break;
+		gc_free_all(&mini->gc_temp);
 	}
 }
 
