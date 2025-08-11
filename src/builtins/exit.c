@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/04 14:24:57 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 16:04:20 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:14:48 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,10 @@ bool	is_valid_exit_arg(char *str)
 	return (true);
 }
 
-int	ft_exit(char **argv, t_minishell *mini)
+static int	handle_exit_args(char **argv, t_minishell *mini)
 {
 	long	exit_code;
 
-	write(2, "exit\n", 5);
-	if (!argv[1])
-	{
-		mini->should_exit = 1;
-		mini->last_exit = mini->last_exit;
-		return (mini->last_exit);
-	}
 	if (!is_valid_exit_arg(argv[1]))
 	{
 		write(2, "exit: numeric argument required\n", 32);
@@ -61,4 +54,16 @@ int	ft_exit(char **argv, t_minishell *mini)
 	mini->should_exit = 1;
 	mini->last_exit = exit_code;
 	return (exit_code);
+}
+
+int	ft_exit(char **argv, t_minishell *mini)
+{
+	write(2, "exit\n", 5);
+	if (!argv[1])
+	{
+		mini->should_exit = 1;
+		mini->last_exit = mini->last_exit;
+		return (mini->last_exit);
+	}
+	return (handle_exit_args(argv, mini));
 }
