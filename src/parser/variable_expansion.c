@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 15:28:01 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:03:14 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,12 @@ char	*expand_variables(char *str, t_minishell *mini)
 
 	if (!str)
 		return (NULL);
-	if (str[0] == '\1')
-		return (str);
-	result = create_empty_string(&mini->gc_temp);
+	result = gc_malloc(1, &mini->gc_temp);
 	if (!result)
 		return (NULL);
+	if (str[0] == '\1')
+		return (str + 1);
+	result[0] = '\0';
 	i = 0;
 	while (str[i])
 	{
