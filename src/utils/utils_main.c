@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 01:23:53 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:52:06 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,8 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	setup_signals_child();
 	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
+	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
+		exit(0);
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
 		exit(1);

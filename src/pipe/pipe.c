@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/09 04:40:11 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:42:37 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,39 @@ static void	setup_pipes_and_redirections(t_commands *cmd,
 	if (handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
 }
+bool is_str_empty_or_whitespace(const char *str)
+{
+    int i = 0;
+    if (!str) // Se for NULL, já é vazio, sacou?
+        return true;
+    
+    while (str[i]) // Enquanto não chegar no final da string
+    {
+        // Se achar qualquer caractere que não seja espaço, tab ou newline, já sai dizendo que não é vazio
+        if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+            return false;
+        i++;
+    }
+    // Se passou o loop todo, é porque só tinha espaços em branco, então é vazio
+    return true;
+}
+void expand_cmd_args(t_commands *cmd, t_minishell *mini)
+{
+    int i = 0;
+    char *expanded;
+
+    while (cmd->argv[i])
+    {
+        expanded = expand_variables(cmd->argv[i], mini);
+        if (!expanded)
+            expanded = ft_strdup("");  // fallback seguro
+		else
+			gc_add_ptr(expanded, &mini->gc_temp);
+        cmd->argv[i] = expanded;
+        i++;
+    }
+}
+
 
 void	child_procces_logic(t_commands *cmd,
 	int prev_read_fd, int pipe_fd[2], t_minishell *mini)
@@ -80,7 +113,10 @@ void	child_procces_logic(t_commands *cmd,
 	char	*cmd_path;
 	int		status;
 
+	expand_cmd_args(cmd, mini);
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
+	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
+		exit(0);
 	if (is_builtin_cmd(cmd->argv[0]))
 	{
 		status = execute_builtin(cmd, mini);
@@ -91,14 +127,17 @@ void	child_procces_logic(t_commands *cmd,
 		exit(1);
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
-	{
-		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-		if (has_slash(cmd->argv[0]))
-			write(2, ": No such file or directory\n", 29);
-		else
-			write(2, ": command not found\n", 20);
-		exit(127);
-	}
+{
+    if (cmd->argv[0] && !is_str_empty_or_whitespace(cmd->argv[0]))
+    {
+        write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
+        if (has_slash(cmd->argv[0]))
+            write(2, ": No such file or directory\n", 29);
+        else
+            write(2, ": command not found\n", 20);
+    }
+    exit(127);
+}
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
 	exit(127);

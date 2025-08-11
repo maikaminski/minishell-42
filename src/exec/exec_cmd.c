@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/09 04:39:42 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:18:19 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,13 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 	return (1);
 }
 
+
 int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 {
 	char	*cmd_path;
 	char	**env_array;
 
-	if (!args || !args[0])
+	if (!args || !args[0] || args[0][0] == '\0')
 		return (1);
 	env_array = env_list_to_array(env, gc);
 	if (!env_array)

@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 16:01:30 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 17:48:33 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,6 +190,7 @@ void		update_shlvl(t_minishell *mini);
 char		*join_strings(char *s1, char *s2, t_garbage **gc);
 char		*append_char(char *str, char c, t_garbage **gc);
 char	*create_empty_string(t_garbage **gc);
+bool is_str_empty_or_whitespace(const char *str);
 
 /* Ambiente */
 void		init_env_list(t_minishell *mini, char **envp);
