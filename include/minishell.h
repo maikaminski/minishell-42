@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 17:48:33 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:19:52 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,8 +141,6 @@ char		*extract_raw_content(char *input, int start,
 t_token		*create_token(char *value, t_tokens type, t_garbage **gc);
 void		add_token_to_list(t_token **list, t_token *new_token);
 t_tokens	get_operator_type(char *input, int pos);
-void		process_operator_token(char *input, int *i,
-			t_token **tokens, t_garbage **gc);
 int			add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc);
 
 /* Variable Expansion Utils */

@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 17:18:19 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:15:50 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 		return (WEXITSTATUS(status));
 	return (1);
 }
-
 
 int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 {
