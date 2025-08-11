@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 19:58:25 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:34:07 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static void	print_exec_error(char *cmd)
 		write(2, ": command not found\n", 20);
 }
 
-int	fork_and_exec(char *cmd_path, char **args, char **envp)
+int	fork_and_exec(char *cmd_path, char **args, char **envp, t_minishell *mini)
 {
 	pid_t	pid;
 	int		status;
@@ -51,7 +51,7 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 	{
 		execve(cmd_path, args, envp);
 		perror("execve");
-		exit(1);
+		child_exit(mini, 1);
 	}
 	if (waitpid(pid, &status, 0) == -1)
 	{
@@ -63,7 +63,7 @@ int	fork_and_exec(char *cmd_path, char **args, char **envp)
 	return (1);
 }
 
-int	exec_cmd(char **args, t_env *env, t_garbage **gc)
+int	exec_cmd(char **args, t_env *env, t_garbage **gc, t_minishell *mini)
 {
 	char	*cmd_path;
 	char	**env_array;
@@ -79,7 +79,7 @@ int	exec_cmd(char **args, t_env *env, t_garbage **gc)
 		print_exec_error(args[0]);
 		return (127);
 	}
-	return (fork_and_exec(cmd_path, args, env_array));
+	return (fork_and_exec(cmd_path, args, env_array, mini));
 }
 
 char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)

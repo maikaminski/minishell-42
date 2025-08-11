@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 19:39:23 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:34:59 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void		print_env_line(t_env *node);
 void		print_export_error(const char *arg);
 
 int			execute_pipeline(t_commands *cmd_list, t_minishell *mini);
-int			exec_cmd(char **args, t_env *env, t_garbage **gc);
+int			exec_cmd(char **args, t_env *env, t_garbage **gc, t_minishell *mini);
 int			exec_single_command(t_exec_data *data, t_minishell *mini);
 void		setup_initial_vars(t_exec_data *data, t_commands *cmd_list);
 char		*get_cmd_path(char *cmd, t_env *env, t_garbage **gc);
