@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/09 04:40:38 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 01:23:53 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,13 +52,22 @@ void	execute_builtin_with_redirections(t_commands *cmd, t_minishell *mini)
 	restore_std_fds(saved_stdin, saved_stdout);
 }
 
+static void	handle_command_not_found(char *cmd)
+{
+	write(2, cmd, ft_strlen(cmd));
+	if (has_slash(cmd))
+		write(2, ": No such file or directory\n", 29);
+	else
+		write(2, ": command not found\n", 20);
+	exit(127);
+}
+
 void	child_process_exec(t_commands *cmd, t_minishell *mini)
 {
 	char	**envp;
 	char	*cmd_path;
 
 	setup_signals_child();
-
 	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		exit(1);
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
@@ -66,33 +75,25 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 		exit(1);
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
-	{
-		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-		if (has_slash(cmd->argv[0]))
-			write(2, ": No such file or directory\n", 29);
-		else
-			write(2, ": command not found\n", 20);
-		exit(127);
-	}
+		handle_command_not_found(cmd->argv[0]);
 	execve(cmd_path, cmd->argv, envp);
-	perror("execve");
+	perror(cmd->argv[0]);
 	exit(126);
 }
 
 void	handle_child_exit_status(int status, t_minishell *mini)
 {
+	int	sig;
+
 	if (WIFEXITED(status))
 		mini->last_exit = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
 	{
-		int sig = WTERMSIG(status);
-		
-		// Adiciona quebra de linha para sinais que interrompem o processo
+		sig = WTERMSIG(status);
 		if (sig == SIGINT)
 			write(STDOUT_FILENO, "\n", 1);
 		else if (sig == SIGQUIT)
 			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-		
 		mini->last_exit = 128 + sig;
 	}
 }

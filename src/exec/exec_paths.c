@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 15:07:43 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/09 04:28:19 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 01:26:56 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ char	*get_cmd_path(char *cmd, t_env *env, t_garbage **gc)
 		return (NULL);
 	if (has_slash(cmd))
 	{
-		if (access(cmd, X_OK) == 0)
+		if (access(cmd, F_OK) == 0)
 		{
 			cmd_path = ft_strdup(cmd);
 			if (!cmd_path || !gc_add_ptr(cmd_path, gc))
