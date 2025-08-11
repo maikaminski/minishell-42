@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:54:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 20:51:58 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:15:21 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,17 @@ void	execute_external_command(t_commands *cmd, t_minishell *mini)
 		return ;
 	}
 	else if (pid == 0)
+	{
+		// Processo filho - configura sinais para comportamento padrão
 		child_process_exec(cmd, mini);
+	}
 	else
 	{
+		// Processo pai - espera pelo filho
 		if (waitpid(pid, &status, 0) == -1)
 		{
-			perror("waitpid");
+			if (errno != ECHILD && errno != EINTR)
+				perror("waitpid");
 			mini->last_exit = 1;
 		}
 		else
