@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/05 23:44:21 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 18:16:09 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:46:08 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ void	signal_handler_interactive(int sig)
 void	signal_handler_child(int sig)
 {
 	g_signal_received = sig;
-	// Não escreve nada aqui - deixa o shell pai tratar
 	(void)sig;
 }
 
@@ -40,8 +39,8 @@ void	setup_signals_interactive(void)
 
 void	setup_signals_child(void)
 {
-	signal(SIGINT, SIG_DFL);  // Comportamento padrão para filhos
-	signal(SIGQUIT, SIG_DFL); // Comportamento padrão para filhos
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 void	setup_signals_ignore(void)
@@ -49,4 +48,3 @@ void	setup_signals_ignore(void)
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);
 }
-

@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 18:16:32 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:43:40 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	init_minishell(t_minishell *mini, char **envp)
 	mini->commands = NULL;
 	mini->env = NULL;
 	mini->last_exit = 0;
-	mini->should_exit = 0; 
+	mini->should_exit = 0;
 	mini->in_fd = dup(STDIN_FILENO);
 	mini->out_fd = dup(STDOUT_FILENO);
 	init_env_list(mini, envp);
@@ -70,14 +70,9 @@ static int	process_input(t_minishell *mini)
 	add_history(input);
 	process_command_line(input, mini);
 	free(input);
-	
-	// Verifica se deve sair após processar comando
 	if (mini->should_exit)
 		return (0);
-		
-	// Reset do sinal após processamento
 	g_signal_received = 0;
-	
 	return (1);
 }
 
@@ -87,8 +82,8 @@ static void	run_minishell(t_minishell *mini)
 	{
 		if (!process_input(mini))
 			break ;
-		if (mini->should_exit)  // Verificar flag
-            break;
+		if (mini->should_exit)
+			break ;
 		gc_free_all(&mini->gc_temp);
 	}
 }
