@@ -6,15 +6,12 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 18:30:58 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:46:43 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:57:36 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
-
-void	child_procces_logic(t_commands *cmd,
-		int prev_read_fd, int pipe_fd[2], t_minishell *mini);
 
 static void	process_last_exit_status(int last_status, t_minishell *mini)
 {

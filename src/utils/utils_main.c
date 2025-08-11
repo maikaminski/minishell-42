@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 17:52:06 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:59:13 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,21 +81,4 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
 	exit(126);
-}
-
-void	handle_child_exit_status(int status, t_minishell *mini)
-{
-	int	sig;
-
-	if (WIFEXITED(status))
-		mini->last_exit = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-	{
-		sig = WTERMSIG(status);
-		if (sig == SIGINT)
-			write(STDOUT_FILENO, "\n", 1);
-		else if (sig == SIGQUIT)
-			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-		mini->last_exit = 128 + sig;
-	}
 }

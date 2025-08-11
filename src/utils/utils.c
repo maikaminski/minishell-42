@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/17 15:35:04 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 22:57:41 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 19:01:52 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ char	is_space(char c)
 
 char	is_operator(char c)
 {
-	return (c == '|' || c == '<' || c == '>' || c == '&' || c == ';' || c == '\\');
+	return (c == '|' || c == '<'
+		|| c == '>' || c == '&' || c == ';' || c == '\\');
 }
 
 int	ft_atol(const char *nbr)

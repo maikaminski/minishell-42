@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:54:52 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 18:58:10 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,8 @@ char		*ft_strjoin_and_free(char *s1, char *s2, int free_s);
 size_t		max_strlen(const char *s1, const char *s2);
 void		update_env_value(t_env *found, const char *value,
 				t_garbage **gc);
+void		child_procces_logic(t_commands *cmd,
+				int prev_read_fd, int pipe_fd[2], t_minishell *mini);
 void		append_env_node(t_env **env, t_env *new);
 void		exec_input(char *input, t_minishell *mini);
 int			execute_builtin(t_commands *cmd, t_minishell *mini);
