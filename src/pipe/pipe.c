@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:39:12 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:13:51 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static void	setup_pipes_and_redirections(t_commands *cmd,
 		close(pipe_fd[1]);
 	}
 	if (handle_redirections(cmd->redir, mini) == -1)
-		exit(1);
+		child_exit(mini, 1);
 }
 
 bool	is_str_empty_or_whitespace(const char *str)
@@ -72,7 +72,7 @@ static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
 
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
-		exit(1);
+		child_exit(mini, 1);
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
 	{
@@ -84,11 +84,11 @@ static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
 			else
 				write(2, ": command not found\n", 20);
 		}
-		exit(127);
+		child_exit(mini, 127);
 	}
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	exit(127);
+	child_exit(mini, 127);
 }
 
 void	child_procces_logic(t_commands *cmd,
@@ -96,14 +96,15 @@ void	child_procces_logic(t_commands *cmd,
 {
 	int	status;
 
+	mini->gc_temp = NULL;
 	expand_cmd_args(cmd, mini);
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
 	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
-		exit(0);
+		child_exit(mini, 0);
 	if (is_builtin_cmd(cmd->argv[0]))
 	{
 		status = execute_builtin(cmd, mini);
-		exit(status);
+		child_exit(mini, status);
 	}
 	execute_external_cmd(cmd, mini);
 }

@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:59:13 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:13:31 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,14 +52,14 @@ void	execute_builtin_with_redirections(t_commands *cmd, t_minishell *mini)
 	restore_std_fds(saved_stdin, saved_stdout);
 }
 
-static void	handle_command_not_found(char *cmd)
+static void	handle_command_not_found(t_minishell *mini, char *cmd)
 {
 	write(2, cmd, ft_strlen(cmd));
 	if (has_slash(cmd))
 		write(2, ": No such file or directory\n", 29);
 	else
 		write(2, ": command not found\n", 20);
-	exit(127);
+	child_exit(mini, 127);
 }
 
 void	child_process_exec(t_commands *cmd, t_minishell *mini)
@@ -67,18 +67,19 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	char	**envp;
 	char	*cmd_path;
 
+	mini->gc_temp = NULL;
 	setup_signals_child();
 	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
-		exit(1);
+		child_exit(mini, 1);
 	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
-		exit(0);
+		child_exit(mini, 0);
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
-		exit(1);
+		child_exit(mini, 1);
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
-		handle_command_not_found(cmd->argv[0]);
+		handle_command_not_found(mini, cmd->argv[0]);
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	exit(126);
+	child_exit(mini, 126);
 }

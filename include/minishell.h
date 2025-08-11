@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:58:10 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 19:39:23 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,5 +217,6 @@ int			handle_heredoc(const char *delimiter, t_minishell *mini);
 char		*read_line_stdin(t_garbage **gc);
 
 void		free_array(char **arr);
+void		child_exit(t_minishell *mini, int code);
 
 #endif
