@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   garbage.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/12 15:35:36 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 20:38:23 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:40:18 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,9 @@ void	gc_free_all(t_garbage **gc)
 	while (*gc)
 	{
 		temp = *gc;
-		free(temp->ptr);
 		*gc = temp->next;
+		if (temp->ptr)
+			free(temp->ptr);
 		free(temp);
 	}
 }
@@ -74,8 +75,9 @@ void	gc_free_temp_only(t_garbage **gc_temp, t_garbage **gc_persistent)
 	while (*gc_temp)
 	{
 		temp = *gc_temp;
-		free(temp->ptr);
 		*gc_temp = temp->next;
+		if (temp->ptr)
+			free(temp->ptr);
 		free(temp);
 	}
 }

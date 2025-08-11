@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_main.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 19:13:40 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:41:16 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int	main(int argc, char **argv, char **envp)
 	dup2(mini.out_fd, STDOUT_FILENO);
 	close(mini.in_fd);
 	close(mini.out_fd);
-	gc_free_all(&mini.gc_persistent);
 	gc_free_all(&mini.gc_temp);
+	gc_free_all(&mini.gc_persistent);
 	return (mini.last_exit);
 }
