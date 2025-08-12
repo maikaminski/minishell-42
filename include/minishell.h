@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 03:12:13 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:21:45 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,8 +154,8 @@ void		execute_external_command(t_commands *cmd, t_minishell *mini);
 void		execute_simple_command(t_commands *cmd, t_minishell *mini);
 void		child_procces_logic(t_commands *cmd, int prev_read_fd,
 				int pipe_fd[2], t_minishell *mini);
-void	cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
-			char *cmd_path, char **envp);
+void		cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
+				char *cmd_path, char **envp);
 
 char		is_space(char c);
 char		is_operator(char c);

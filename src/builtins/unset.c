@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:00:55 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 23:17:18 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:48:12 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,14 +17,14 @@ bool	is_valid_identifier(const char *key)
 {
 	int	i;
 
-	i = 1;
 	if (!key || key[0] == '\0')
 		return (false);
-	if (!(ft_isalpha(key[0]) || key[0] == '_'))
+	if (ft_strchr(key, '=') || ft_strchr(key, '+'))
 		return (false);
+	i = 0;
 	while (key[i])
 	{
-		if (!ft_isalnum(key[i]) && key[i] != '_')
+		if (key[i] == ' ' || key[i] == '\t')
 			return (false);
 		i++;
 	}
@@ -55,6 +55,15 @@ void	remove_env_node(t_env **env, const char *key)
 	}
 }
 
+void	print_unset_invalid_identifier(const char *arg)
+{
+	if (!arg)
+		return ;
+	write(STDERR_FILENO, "unset: `", 8);
+	write(STDERR_FILENO, arg, ft_strlen(arg));
+	write(STDERR_FILENO, "': not a valid identifier\n", 27);
+}
+
 int	ft_unset(char **argv, t_minishell *mini)
 {
 	int	i;
@@ -62,15 +71,18 @@ int	ft_unset(char **argv, t_minishell *mini)
 
 	if (!argv || !mini)
 		return (1);
+	if (!argv[1])
+	{
+		write(2, "unset: not enough arguments\n", 28);
+		return (1);
+	}
 	i = 1;
 	status = 0;
 	while (argv[i])
 	{
 		if (!is_valid_identifier(argv[i]))
 		{
-			write(2, "unset: `", 8);
-			write(2, argv[i], ft_strlen(argv[i]));
-			write(2, "': not a valid identifier\n", 27);
+			print_unset_invalid_identifier(argv[i]);
 			status = 1;
 		}
 		else

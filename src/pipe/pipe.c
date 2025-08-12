@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 02:44:19 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 14:32:40 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,8 @@ static void	handle_command_not_found(t_commands *cmd, t_minishell *mini)
 static void	cleanup_and_exec(t_commands *cmd, t_minishell *mini, char *cmd_path,
 	char **envp)
 {
+	execve(cmd_path, cmd->argv, envp);
+	perror(cmd->argv[0]);
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
@@ -57,8 +59,6 @@ static void	cleanup_and_exec(t_commands *cmd, t_minishell *mini, char *cmd_path,
 		gc_free_all(&mini->gc_persistent);
 		mini->gc_persistent = NULL;
 	}
-	execve(cmd_path, cmd->argv, envp);
-	perror(cmd->argv[0]);
 	exit(127);
 }
 

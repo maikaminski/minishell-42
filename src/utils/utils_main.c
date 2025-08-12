@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
+/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 03:12:33 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 13:51:15 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,8 @@ void	execute_builtin_with_redirections(t_commands *cmd, t_minishell *mini)
 void	cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
 	char *cmd_path, char **envp)
 {
+	execve(cmd_path, cmd->argv, envp);
+	perror(cmd->argv[0]);
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
@@ -65,8 +67,6 @@ void	cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
 		gc_free_all(&mini->gc_persistent);
 		mini->gc_persistent = NULL;
 	}
-	execve(cmd_path, cmd->argv, envp);
-	perror(cmd->argv[0]);
 	exit(126);
 }
 
