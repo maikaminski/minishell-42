@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   token_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:53:15 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 14:05:44 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 17:53:41 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Determina o tipo de redirecionamento baseado no token
 static t_redir_type	get_redir_type(t_tokens token_type)
 {
 	if (token_type == T_REDIR_IN)
@@ -26,7 +25,6 @@ static t_redir_type	get_redir_type(t_tokens token_type)
 	return (REDIR_IN);
 }
 
-// Processa um token de redirecionamento
 static int	handle_redirection(t_token **current,
 	t_commands *cmd, t_garbage **gc)
 {
@@ -95,7 +93,6 @@ static t_commands	*parse_single_command(t_token **tokens,
 	return (cmd);
 }
 
-// Função principal para parsear tokens em uma lista de comandos
 t_commands	*parse_tokens_to_commands(t_token *tokens,
 	t_garbage **gc, t_minishell *mini)
 {

@@ -4,8 +4,7 @@ libft/libft.a
 # Ignorar o executável minishell
 minishell
 
-# Ignorar arquivos objeto e dependência
+# Ignorar arquivos objeto, dependência e texto
 *.o
 *.d
-
 *.txt

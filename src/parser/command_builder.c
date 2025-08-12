@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   command_builder.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:55:13 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 20:32:42 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 17:52:21 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Cria um novo nó de comando
 t_commands	*create_command_node(t_garbage **gc)
 {
 	t_commands	*cmd;
@@ -26,7 +25,6 @@ t_commands	*create_command_node(t_garbage **gc)
 	return (cmd);
 }
 
-// Cria um novo nó de redirecionamento
 t_redir	*create_redir_node(t_redir_type type, char *file, t_garbage **gc)
 {
 	t_redir	*redir;
@@ -40,7 +38,6 @@ t_redir	*create_redir_node(t_redir_type type, char *file, t_garbage **gc)
 	return (redir);
 }
 
-// Adiciona um redirecionamento ao comando
 void	add_redir_to_command(t_commands *cmd, t_redir *new_redir)
 {
 	t_redir	*last;
@@ -58,7 +55,6 @@ void	add_redir_to_command(t_commands *cmd, t_redir *new_redir)
 	last->next = new_redir;
 }
 
-// Adiciona um comando ao final da lista de comandos
 void	add_command_to_list(t_commands **list, t_commands *new_cmd)
 {
 	t_commands	*last;
