@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_cmd.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 19:13:48 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 20:34:07 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 23:29:18 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ char	*find_cmd_in_paths(char **paths, char *cmd, t_garbage **gc)
 	int		i;
 
 	i = 0;
-	while (paths[i])
+	while (paths && paths[i])
 	{
 		full_path = construct_path(paths[i], cmd, gc);
 		if (full_path && access(full_path, X_OK) == 0)

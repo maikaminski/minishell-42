@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 21:24:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 17:03:14 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 22:59:09 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,13 +93,16 @@ char	*expand_variables(char *str, t_minishell *mini)
 	int		i;
 
 	if (!str)
-		return (NULL);
-	result = gc_malloc(1, &mini->gc_temp);
-	if (!result)
-		return (NULL);
+		return (create_empty_string(&mini->gc_temp));
+	
+	// Se a string começa com \1 é uma string literal (aspas simples)
 	if (str[0] == '\1')
 		return (str + 1);
-	result[0] = '\0';
+	
+	result = create_empty_string(&mini->gc_temp);
+	if (!result)
+		return (NULL);
+	
 	i = 0;
 	while (str[i])
 	{
@@ -107,6 +110,9 @@ char	*expand_variables(char *str, t_minishell *mini)
 			result = process_dollar_sign(str, &i, result, mini);
 		else
 			result = append_char(result, str[i++], &mini->gc_temp);
+		
+		if (!result)
+			return (create_empty_string(&mini->gc_temp));
 	}
 	return (result);
 }
