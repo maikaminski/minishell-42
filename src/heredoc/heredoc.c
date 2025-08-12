@@ -6,7 +6,7 @@
 /*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/01 15:47:21 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 10:09:53 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 16:31:19 by makamins         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,13 @@ static int	heredoc_loop(int write_fd, const char *delimiter, t_minishell *mini)
 	{
 		write(1, "> ", 2);
 		line = read_line_stdin(&mini->gc_temp);
+		if (line[0] == '\0')
+		{
+			printf("\nminishell: warning: ");
+			printf("here-document delimited by end-of-file (wanted `%s')\n",
+				delimiter);
+			break ;
+		}
 		if (!line)
 			return (-1);
 		if (ft_strncmp(line, delimiter, ft_strlen(delimiter) + 1) == 0)
