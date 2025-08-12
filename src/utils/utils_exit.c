@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 19:38:23 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 01:49:26 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 02:09:18 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 
 void	child_exit(t_minishell *mini, int exit_code)
 {
-	// Limpar AMBOS os garbage collectors antes de sair
 	if (mini)
 	{
 		if (mini->gc_temp)

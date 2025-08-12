@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/04 15:15:01 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/08 10:48:50 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 02:31:35 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Conta o número de comandos na lista
 int	count_commands(t_commands *cmd_list)
 {
 	int			count;

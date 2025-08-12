@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:21:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 21:40:58 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 03:12:13 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,10 @@ void		child_process_exec(t_commands *cmd, t_minishell *mini);
 void		handle_child_exit_status(int status, t_minishell *mini);
 void		execute_external_command(t_commands *cmd, t_minishell *mini);
 void		execute_simple_command(t_commands *cmd, t_minishell *mini);
+void		child_procces_logic(t_commands *cmd, int prev_read_fd,
+				int pipe_fd[2], t_minishell *mini);
+void	cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
+			char *cmd_path, char **envp);
 
 char		is_space(char c);
 char		is_operator(char c);
@@ -164,6 +168,8 @@ char		*join_strings(char *s1, char *s2, t_garbage **gc);
 char		*append_char(char *str, char c, t_garbage **gc);
 char		*create_empty_string(t_garbage **gc);
 bool		is_str_empty_or_whitespace(const char *str);
+void		expand_cmd_args(t_commands *cmd, t_minishell *mini);
+void		handle_cmd_not_found(t_minishell *mini, char *cmd);
 
 void		init_env_list(t_minishell *mini, char **envp);
 t_env		*create_env_node(const char *key, const char *value,

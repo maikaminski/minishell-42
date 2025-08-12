@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/11 18:37:45 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 18:46:49 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 02:51:46 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
-// Verifica se o comando é um builtin
 int	is_builtin_cmd(char *cmd)
 {
 	if (!cmd)
@@ -35,7 +34,6 @@ int	is_builtin_cmd(char *cmd)
 	return (0);
 }
 
-// Executa builtin no processo filho
 int	execute_builtin(t_commands *cmd, t_minishell *mini)
 {
 	if (ft_strncmp(cmd->argv[0], "echo", 5) == 0)

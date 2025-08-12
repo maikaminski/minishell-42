@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_main2.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:54:54 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 19:00:50 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 03:13:45 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,25 @@ static void	handle_parent_process(pid_t pid, t_minishell *mini)
 	else
 		handle_child_exit_status(status, mini);
 	setup_signals_interactive();
+}
+
+void	child_process_exec(t_commands *cmd, t_minishell *mini)
+{
+	char	**envp;
+	char	*cmd_path;
+
+	setup_signals_child();
+	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
+		child_exit(mini, 1);
+	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
+		child_exit(mini, 0);
+	envp = env_list_to_array(mini->env, &mini->gc_temp);
+	if (!envp)
+		child_exit(mini, 1);
+	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
+	if (!cmd_path)
+		handle_cmd_not_found(mini, cmd->argv[0]);
+	cleanup_memory_and_exec(cmd, mini, cmd_path, envp);
 }
 
 void	execute_external_command(t_commands *cmd, t_minishell *mini)

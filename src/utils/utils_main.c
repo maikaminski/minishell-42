@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 01:50:51 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 03:12:33 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,35 +52,9 @@ void	execute_builtin_with_redirections(t_commands *cmd, t_minishell *mini)
 	restore_std_fds(saved_stdin, saved_stdout);
 }
 
-static void	handle_command_not_found(t_minishell *mini, char *cmd)
+void	cleanup_memory_and_exec(t_commands *cmd, t_minishell *mini,
+	char *cmd_path, char **envp)
 {
-	write(2, cmd, ft_strlen(cmd));
-	if (has_slash(cmd))
-		write(2, ": No such file or directory\n", 29);
-	else
-		write(2, ": command not found\n", 20);
-	child_exit(mini, 127);
-}
-
-void	child_process_exec(t_commands *cmd, t_minishell *mini)
-{
-	char	**envp;
-	char	*cmd_path;
-
-	setup_signals_child();
-	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
-		child_exit(mini, 1);
-	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
-		child_exit(mini, 0);
-	
-	envp = env_list_to_array(mini->env, &mini->gc_temp);
-	if (!envp)
-		child_exit(mini, 1);
-	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
-	if (!cmd_path)
-		handle_command_not_found(mini, cmd->argv[0]);
-	
-	// CRÍTICO: Limpar TODA a memória antes do execve
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
@@ -91,8 +65,17 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 		gc_free_all(&mini->gc_persistent);
 		mini->gc_persistent = NULL;
 	}
-	
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	exit(126);  // Se execve falhar, sair diretamente sem child_exit
+	exit(126);
+}
+
+void	handle_cmd_not_found(t_minishell *mini, char *cmd)
+{
+	write(2, cmd, ft_strlen(cmd));
+	if (has_slash(cmd))
+		write(2, ": No such file or directory\n", 29);
+	else
+		write(2, ": command not found\n", 20);
+	child_exit(mini, 127);
 }

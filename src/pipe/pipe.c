@@ -6,14 +6,15 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/12 01:52:56 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 02:44:19 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
-static void	setup_pipes_and_redirections(t_commands *cmd, int prev_read_fd, int pipe_fd[2], t_minishell *mini)
+static void	setup_pipes_and_redirections(t_commands *cmd, int prev_read_fd,
+	int pipe_fd[2], t_minishell *mini)
 {
 	if (prev_read_fd != -1)
 	{
@@ -30,62 +31,22 @@ static void	setup_pipes_and_redirections(t_commands *cmd, int prev_read_fd, int 
 		child_exit(mini, 1);
 }
 
-bool	is_str_empty_or_whitespace(const char *str)
+static void	handle_command_not_found(t_commands *cmd, t_minishell *mini)
 {
-	int	i;
-
-	i = 0;
-	if (!str)
-		return (true);
-	while (str[i])
+	if (cmd->argv[0] && !is_str_empty_or_whitespace(cmd->argv[0]))
 	{
-		if (str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
-void	expand_cmd_args(t_commands *cmd, t_minishell *mini)
-{
-	int		i;
-	char	*expanded;
-
-	i = 0;
-	while (cmd->argv[i])
-	{
-		expanded = expand_variables(cmd->argv[i], mini);
-		if (!expanded)
-			expanded = ft_strdup("");
+		write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
+		if (has_slash(cmd->argv[0]))
+			write(2, ": No such file or directory\n", 29);
 		else
-			gc_add_ptr(expanded, &mini->gc_temp);
-		cmd->argv[i] = expanded;
-		i++;
+			write(2, ": command not found\n", 20);
 	}
+	child_exit(mini, 127);
 }
 
-static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
+static void	cleanup_and_exec(t_commands *cmd, t_minishell *mini, char *cmd_path,
+	char **envp)
 {
-	char	**envp;
-	char	*cmd_path;
-
-	envp = env_list_to_array(mini->env, &mini->gc_temp);
-	if (!envp)
-		child_exit(mini, 1);
-	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
-	if (!cmd_path)
-	{
-		if (cmd->argv[0] && !is_str_empty_or_whitespace(cmd->argv[0]))
-		{
-			write(2, cmd->argv[0], ft_strlen(cmd->argv[0]));
-			if (has_slash(cmd->argv[0]))
-				write(2, ": No such file or directory\n", 29);
-			else
-				write(2, ": command not found\n", 20);
-		}
-		child_exit(mini, 127);
-	}
-	// IMPORTANTE: Limpar garbage collectors ANTES do execve
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
@@ -98,7 +59,21 @@ static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
 	}
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	exit(127);  // Se execve falhar, sair diretamente
+	exit(127);
+}
+
+static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
+{
+	char	**envp;
+	char	*cmd_path;
+
+	envp = env_list_to_array(mini->env, &mini->gc_temp);
+	if (!envp)
+		child_exit(mini, 1);
+	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
+	if (!cmd_path)
+		handle_command_not_found(cmd, mini);
+	cleanup_and_exec(cmd, mini, cmd_path, envp);
 }
 
 void	child_procces_logic(t_commands *cmd,
@@ -106,7 +81,6 @@ void	child_procces_logic(t_commands *cmd,
 {
 	int	status;
 
-	// NÃO criar novo gc_temp - usar o existente mas limpar no final
 	expand_cmd_args(cmd, mini);
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
 	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))

@@ -6,19 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 22:58:15 by sabsanto         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   minishell_main.c                                   :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 21:30:00 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 02:04:48 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,27 +20,22 @@ static void	process_command_line(char *input, t_minishell *mini)
 	t_token		*tokens;
 	t_commands	*cmd_list;
 
-	// Garantir que gc_temp está limpo antes de processar
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
 		mini->gc_temp = NULL;
 	}
-
 	if (validate_input_syntax(input))
 	{
 		mini->last_exit = 2;
 		return ;
 	}
-	
 	tokens = tokenize(input, mini);
 	if (!tokens)
 		return ;
-	
 	cmd_list = parse_tokens_to_commands(tokens, &mini->gc_temp, mini);
 	if (!cmd_list)
 		return ;
-	
 	if (cmd_list->next)
 		execute_pipeline(cmd_list, mini);
 	else
@@ -91,14 +74,11 @@ static int	process_input(t_minishell *mini)
 	add_history(input);
 	process_command_line(input, mini);
 	free(input);
-	
-	// CRÍTICO: Sempre limpar gc_temp após cada comando
 	if (mini->gc_temp)
 	{
 		gc_free_all(&mini->gc_temp);
 		mini->gc_temp = NULL;
 	}
-	
 	if (mini->should_exit)
 		return (0);
 	g_signal_received = 0;
@@ -124,14 +104,10 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	init_minishell(&mini, envp);
 	run_minishell(&mini);
-	
-	// Restaurar file descriptors
 	dup2(mini.in_fd, STDIN_FILENO);
 	dup2(mini.out_fd, STDOUT_FILENO);
 	close(mini.in_fd);
 	close(mini.out_fd);
-	
-	// Limpeza final de toda memória
 	if (mini.gc_temp)
 	{
 		gc_free_all(&mini.gc_temp);
@@ -142,6 +118,5 @@ int	main(int argc, char **argv, char **envp)
 		gc_free_all(&mini.gc_persistent);
 		mini.gc_persistent = NULL;
 	}
-	
 	return (mini.last_exit);
 }
