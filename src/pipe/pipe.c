@@ -3,18 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/31 16:46:32 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 20:13:51 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/12 01:52:56 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "garbage_collector.h"
 
-static void	setup_pipes_and_redirections(t_commands *cmd,
-	int prev_read_fd, int pipe_fd[2], t_minishell *mini)
+static void	setup_pipes_and_redirections(t_commands *cmd, int prev_read_fd, int pipe_fd[2], t_minishell *mini)
 {
 	if (prev_read_fd != -1)
 	{
@@ -86,9 +85,20 @@ static void	execute_external_cmd(t_commands *cmd, t_minishell *mini)
 		}
 		child_exit(mini, 127);
 	}
+	// IMPORTANTE: Limpar garbage collectors ANTES do execve
+	if (mini->gc_temp)
+	{
+		gc_free_all(&mini->gc_temp);
+		mini->gc_temp = NULL;
+	}
+	if (mini->gc_persistent)
+	{
+		gc_free_all(&mini->gc_persistent);
+		mini->gc_persistent = NULL;
+	}
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	child_exit(mini, 127);
+	exit(127);  // Se execve falhar, sair diretamente
 }
 
 void	child_procces_logic(t_commands *cmd,
@@ -96,7 +106,7 @@ void	child_procces_logic(t_commands *cmd,
 {
 	int	status;
 
-	mini->gc_temp = NULL;
+	// NÃO criar novo gc_temp - usar o existente mas limpar no final
 	expand_cmd_args(cmd, mini);
 	setup_pipes_and_redirections(cmd, prev_read_fd, pipe_fd, mini);
 	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))

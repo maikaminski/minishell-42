@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 13:12:19 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/11 23:07:03 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/12 01:50:51 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,32 @@ void	child_process_exec(t_commands *cmd, t_minishell *mini)
 	char	**envp;
 	char	*cmd_path;
 
-	// IMPORTANTE: NÃO liberar gc_temp aqui porque ainda precisamos dos dados do comando
-	// O processo filho vai terminar com exit(), então a memória será automaticamente liberada
-	
 	setup_signals_child();
 	if (cmd->redir && handle_redirections(cmd->redir, mini) == -1)
 		child_exit(mini, 1);
 	if (!cmd->argv[0] || is_str_empty_or_whitespace(cmd->argv[0]))
 		child_exit(mini, 0);
 	
-	// Agora sim, podemos criar novas alocações para envp e cmd_path
 	envp = env_list_to_array(mini->env, &mini->gc_temp);
 	if (!envp)
 		child_exit(mini, 1);
 	cmd_path = get_cmd_path(cmd->argv[0], mini->env, &mini->gc_temp);
 	if (!cmd_path)
 		handle_command_not_found(mini, cmd->argv[0]);
+	
+	// CRÍTICO: Limpar TODA a memória antes do execve
+	if (mini->gc_temp)
+	{
+		gc_free_all(&mini->gc_temp);
+		mini->gc_temp = NULL;
+	}
+	if (mini->gc_persistent)
+	{
+		gc_free_all(&mini->gc_persistent);
+		mini->gc_persistent = NULL;
+	}
+	
 	execve(cmd_path, cmd->argv, envp);
 	perror(cmd->argv[0]);
-	child_exit(mini, 126);
+	exit(126);  // Se execve falhar, sair diretamente sem child_exit
 }
