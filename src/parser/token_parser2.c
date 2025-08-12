@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   token_parser2.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: makamins <makamins@student.42.fr>          +#+  +:+       +#+        */
+/*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/08 14:03:26 by makamins          #+#    #+#             */
-/*   Updated: 2025/08/08 14:03:59 by makamins         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:58:02 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,15 @@
 
 int	add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc)
 {
-	int		count;
 	char	**new_argv;
+	int		count;
 	int		i;
 
+	if (!cmd || !arg || !gc)
+		return (1);
 	count = 0;
-	if (cmd->argv)
-	{
-		while (cmd->argv[count])
+	while (cmd->argv && cmd->argv[count])
 		count++;
-	}
 	new_argv = gc_malloc(sizeof(char *) * (count + 2), gc);
 	if (!new_argv)
 		return (1);
@@ -34,8 +33,8 @@ int	add_arg_to_command(t_commands *cmd, char *arg, t_garbage **gc)
 		new_argv[i] = cmd->argv[i];
 		i++;
 	}
-	new_argv[i] = arg;
-	new_argv[i + 1] = NULL;
+	new_argv[count] = arg;
+	new_argv[count + 1] = NULL;
 	cmd->argv = new_argv;
 	return (0);
 }

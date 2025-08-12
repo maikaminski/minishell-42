@@ -6,7 +6,7 @@
 /*   By: sabsanto <sabsanto@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/01 18:49:25 by sabsanto          #+#    #+#             */
-/*   Updated: 2025/08/11 20:41:16 by sabsanto         ###   ########.fr       */
+/*   Updated: 2025/08/11 20:58:26 by sabsanto         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,17 @@ static void	process_command_line(char *input, t_minishell *mini)
 		return ;
 	cmd_list = parse_tokens_to_commands(tokens, &mini->gc_temp, mini);
 	if (!cmd_list)
+	{
+		gc_free_all(&mini->gc_temp);
+		mini->gc_temp = NULL;
 		return ;
+	}
 	if (cmd_list->next)
 		execute_pipeline(cmd_list, mini);
 	else
 		execute_simple_command(cmd_list, mini);
 	gc_free_all(&mini->gc_temp);
+	mini->gc_temp = NULL;
 }
 
 static void	init_minishell(t_minishell *mini, char **envp)
@@ -84,7 +89,11 @@ static void	run_minishell(t_minishell *mini)
 			break ;
 		if (mini->should_exit)
 			break ;
-		gc_free_all(&mini->gc_temp);
+		if (mini->gc_temp)
+		{
+			gc_free_all(&mini->gc_temp);
+			mini->gc_temp = NULL;
+		}
 	}
 }
 
@@ -100,7 +109,15 @@ int	main(int argc, char **argv, char **envp)
 	dup2(mini.out_fd, STDOUT_FILENO);
 	close(mini.in_fd);
 	close(mini.out_fd);
-	gc_free_all(&mini.gc_temp);
-	gc_free_all(&mini.gc_persistent);
+	if (mini.gc_temp)
+	{
+		gc_free_all(&mini.gc_temp);
+		mini.gc_temp = NULL;
+	}
+	if (mini.gc_persistent)
+	{
+		gc_free_all(&mini.gc_persistent);
+		mini.gc_persistent = NULL;
+	}
 	return (mini.last_exit);
 }
